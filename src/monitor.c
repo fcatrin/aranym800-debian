@@ -3497,6 +3497,15 @@ void MONITOR_BPC(char *arg)
 }
 #endif
 
+static void MONITOR_emit_enter(void) {
+	printf("MONITOR READY\n");
+}
+
+static void MONITOR_emit_exit(void) {
+	printf("MONITOR CLOSED\n");
+}
+
+
 int MONITOR_Run(void)
 {
 	UWORD addr;
@@ -3535,7 +3544,7 @@ int MONITOR_Run(void)
 	MONITOR_break_ret = FALSE;
 #endif /* MONITOR_BREAK */
 
-	show_state();
+	MONITOR_emit_enter();
 
 	for (;;) {
 		char s[128];
@@ -3577,6 +3586,7 @@ int MONITOR_Run(void)
 #ifdef MONITOR_PROFILE
 			memset(CPU_instruction_count, 0, sizeof(CPU_instruction_count));
 #endif /* MONITOR_PROFILE */
+			MONITOR_emit_exit();
 			PLUS_EXIT_MONITOR;
 			return TRUE;
 		}
@@ -3592,6 +3602,7 @@ int MONITOR_Run(void)
 		else if (strcmp(t, "G") == 0) {
 			if(get_hex(&addr)) CPU_regPC = addr;
 			MONITOR_break_step = TRUE;
+			MONITOR_emit_exit();
 			PLUS_EXIT_MONITOR;
 			return TRUE;
 		}
@@ -3599,6 +3610,7 @@ int MONITOR_Run(void)
 			if(get_hex(&addr)) CPU_regPC = addr;
 			MONITOR_break_ret = TRUE;
 			MONITOR_ret_nesting = 1;
+			MONITOR_emit_exit();
 			PLUS_EXIT_MONITOR;
 			return TRUE;
 		}
@@ -3606,6 +3618,7 @@ int MONITOR_Run(void)
 			if(get_hex(&addr)) CPU_regPC = addr;
 			get_hex(&addr);
 			step_over();
+			MONITOR_emit_exit();
 			PLUS_EXIT_MONITOR;
 			return TRUE;
 		}
@@ -3664,11 +3677,13 @@ int MONITOR_Run(void)
 #endif /* PAGED_ATTRIB */
 		else if (strcmp(t, "COLDSTART") == 0) {
 			Atari800_Coldstart();
+			MONITOR_emit_exit();
 			PLUS_EXIT_MONITOR;
 			return TRUE;	/* perform reboot immediately */
 		}
 		else if (strcmp(t, "WARMSTART") == 0) {
 			Atari800_Warmstart();
+			MONITOR_emit_exit();
 			PLUS_EXIT_MONITOR;
 			return TRUE;	/* perform reboot immediately */
 		}
@@ -3783,6 +3798,7 @@ int MONITOR_Run(void)
 		} else if (strcmp(t, "HELP") == 0 || strcmp(t, "?") == 0)
 			show_help();
 		else if (strcmp(t, "QUIT") == 0 || strcmp(t, "EXIT") == 0) {
+			MONITOR_emit_exit();
 			PLUS_EXIT_MONITOR;
 			return FALSE;
 		} else if(t[0] == '*' || t[0] == '@') {

@@ -1,0 +1,8 @@
+# Fast build and test method
+
+# First pass to build config file
+make -f debian/rules bld-sdl && src/atari800
+
+# Second and next pass
+cd src
+make && ./atari800

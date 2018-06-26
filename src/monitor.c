@@ -2365,6 +2365,20 @@ static void monitor_show_mem(UWORD *addr, int screencodes)
 	} while (--count > 0);
 }
 
+static void monitor_dump_mem(void)
+{
+	int count = 2048;
+	UWORD addr = 0;
+	do {
+		int i;
+		for (i = 0; i < 32; i++)
+			printf("%02X", MEMORY_SafeGetByte((UWORD) (addr + i)));
+		putchar('\n');
+		addr+=32;
+	} while (--count > 0);
+}
+
+
 /* Starts searching for memory locations that hold a value fetched from command line. */
 static void trainer_start_search(void)
 {
@@ -3703,6 +3717,8 @@ int MONITOR_Run(void)
 			monitor_show_mem(&addr, FALSE);
 		else if (strcmp(t, "MS") == 0)
 			monitor_show_mem(&addr, TRUE);
+		else if (strcmp(t, "MEMDUMP") == 0)
+			monitor_dump_mem();
 		else if (strcmp(t, "TSS") == 0)
 			trainer_start_search();
 		else if (strcmp(t, "TSN") == 0)

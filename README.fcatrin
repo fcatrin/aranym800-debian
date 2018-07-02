@@ -1,3 +1,7 @@
+# Prepare development environment
+sudo apt-get build-dep atari800
+
+
 # Fast build and test method
 
 # First pass to build config file

@@ -1192,7 +1192,7 @@ static void monitor_breakpoints(void)
 	if (t == NULL) {
 		int i;
 		if (MONITOR_breakpoint_table_size == 0) {
-			printf("No breakpoints defined\n");
+			printf("EOL\n");
 			return;
 		}
 		printf("Breakpoints are %sabled\n", MONITOR_breakpoints_enabled ? "en" : "dis");
@@ -1274,6 +1274,7 @@ static void monitor_breakpoints(void)
 			}
 			putchar('\n');
 		}
+		printf("EOL\n");
 		return;
 	}
 	if (strcmp(t, "?") == 0) {

@@ -619,6 +619,33 @@ void CPU_GO(int limit)
 		insn = GET_CODE_BYTE();
 
 #ifdef MONITOR_BREAKPOINTS
+#ifdef MONITOR_BREAKPOINTS_SIMPLE
+		int breakpoint = 0;
+		int i;
+		for (i = 0; i < MONITOR_breakpoint_table_size && !breakpoint; i++) {
+			if (!MONITOR_breakpoint_table[i].enabled)
+				continue; /* skip */
+			int cond  = MONITOR_breakpoint_table[i].condition;
+			int value = MONITOR_breakpoint_table[i].value;
+
+			int val = -1;
+			switch (cond >> 3) {
+			case MONITOR_BREAKPOINT_PC >> 3:
+				val = GET_PC() - 1;
+				break;
+			}
+			breakpoint = ((cond & MONITOR_BREAKPOINT_EQUAL) != 0 && val == value);
+		}
+
+		if (breakpoint) {
+			/* fire breakpoint */
+			PC--;
+			DO_BREAK;
+			PC++;
+			/* goto breakpoint_return; */
+		}
+
+#else
 #ifdef MONITOR_BREAK
 		if (MONITOR_breakpoint_table_size > 0 && MONITOR_breakpoints_enabled && !MONITOR_break_step)
 #else
@@ -784,6 +811,7 @@ void CPU_GO(int limit)
 		no_breakpoint:
 			;
 		}
+#endif /* MONITOR_BREAKPOINTS_SIMPLE */
 #endif /* MONITOR_BREAKPOINTS */
 
 #ifndef CYCLES_PER_OPCODE

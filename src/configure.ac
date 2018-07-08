@@ -742,6 +742,11 @@ A8_OPTION(monitorbreakpoints,no,
           MONITOR_BREAKPOINTS,[Define to activate user-defined breakpoints.]
          )
 
+A8_OPTION(monitorbreakpointssimple,no,
+          [Use simple breakpoint mechanism (default=OFF)],
+          MONITOR_BREAKPOINTS_SIMPLE,[Define to use PC based multi breakpoints.]
+         )
+
 A8_OPTION(monitorhints,yes,
           [Provide hints in the disassembler (human-readable address labels) (default=ON)],
           MONITOR_HINTS,[Define to activate hints in disassembler.]

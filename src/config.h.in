@@ -360,6 +360,9 @@
 /* Define to activate user-defined breakpoints. */
 #undef MONITOR_BREAKPOINTS
 
+/* Define to use PC based multi breakpoints. */
+#undef MONITOR_BREAKPOINTS_SIMPLE
+
 /* Define to activate hints in disassembler. */
 #undef MONITOR_HINTS
 

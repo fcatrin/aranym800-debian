@@ -713,6 +713,7 @@ enable_altirra_bios
 enable_monitorasm
 enable_monitorbreak
 enable_monitorbreakpoints
+enable_monitorbreakpointssimple
 enable_monitorhints
 enable_monitorprofile
 enable_monitortrace
@@ -1401,6 +1402,8 @@ Optional Features:
                           (slower emulation) (default=ON)
   --enable-monitorbreakpoints
                           Support user-defined breakpoints (default=OFF)
+  --enable-monitorbreakpointssimple
+                          Use simple breakpoint mechanism (default=OFF)
   --enable-monitorhints   Provide hints in the disassembler (human-readable
                           address labels) (default=ON)
   --enable-monitorprofile 6502 opcode profiling (default=OFF)
@@ -8159,6 +8162,21 @@ fi
     if [ "$WANT_MONITOR_BREAKPOINTS" = "yes" ]; then
 
 $as_echo "#define MONITOR_BREAKPOINTS 1" >>confdefs.h
+
+    fi
+
+
+
+    # Check whether --enable-monitorbreakpointssimple was given.
+if test "${enable_monitorbreakpointssimple+set}" = set; then :
+  enableval=$enable_monitorbreakpointssimple; WANT_MONITOR_BREAKPOINTS_SIMPLE=$enableval
+else
+  WANT_MONITOR_BREAKPOINTS_SIMPLE=no
+fi
+
+    if [ "$WANT_MONITOR_BREAKPOINTS_SIMPLE" = "yes" ]; then
+
+$as_echo "#define MONITOR_BREAKPOINTS_SIMPLE 1" >>confdefs.h
 
     fi
 

@@ -1125,6 +1125,8 @@ int MONITOR_ret_nesting = 0;
 
 #ifdef MONITOR_BREAKPOINTS
 
+UBYTE MONITOR_break_xex = FALSE;
+
 MONITOR_breakpoint_cond MONITOR_breakpoint_table[MONITOR_BREAKPOINT_TABLE_MAX];
 int MONITOR_breakpoint_table_size = 0;
 int MONITOR_breakpoints_enabled = TRUE;
@@ -1184,6 +1186,24 @@ static void breakpoints_set(int enabled)
 	}
 	else
 		MONITOR_breakpoints_enabled = enabled;
+}
+
+void MONITOR_set_breakpoint(int position, int condition, UWORD value, UWORD m_addr) {
+	int i;
+	for(i = 0; i<MONITOR_breakpoint_table_size; i++) {
+		MONITOR_breakpoint_cond *brk = &MONITOR_breakpoint_table[i];
+		if (brk->condition == condition && brk->value == value && brk->m_addr == m_addr) return;
+	}
+
+	for (i = MONITOR_breakpoint_table_size; i > position; i--)
+		MONITOR_breakpoint_table[i] = MONITOR_breakpoint_table[i - 1];
+
+	MONITOR_breakpoint_table[position].enabled   = TRUE;
+	MONITOR_breakpoint_table[position].condition = condition;
+	MONITOR_breakpoint_table[position].value     = value;
+	MONITOR_breakpoint_table[position].m_addr    = m_addr;
+
+	MONITOR_breakpoint_table_size++;
 }
 
 static void monitor_breakpoints(void)
@@ -1472,14 +1492,9 @@ static void monitor_breakpoints(void)
 				printf("Bad argument\n");
 				return;
 			}
-			for (j = MONITOR_breakpoint_table_size; j > i; j--)
-				MONITOR_breakpoint_table[j] = MONITOR_breakpoint_table[j - 1];
-			MONITOR_breakpoint_table[i].enabled = TRUE;
-			MONITOR_breakpoint_table[i].condition = condition;
-			MONITOR_breakpoint_table[i].value = (UWORD) value;
-			MONITOR_breakpoint_table[i].m_addr = (UWORD) m_addr;
+
+			MONITOR_set_breakpoint(i, condition, (UWORD) value, (UWORD) m_addr);
 			i++;
-			MONITOR_breakpoint_table_size++;
 			t = get_token();
 			if (t == NULL) {
 				printf("Breakpoint(s) added\n");
@@ -3502,6 +3517,12 @@ void MONITOR_BBRK_on(void)
 {
 	MONITOR_break_brk = TRUE;
 }
+
+void MONITOR_BBRK_XEX_on(void)
+{
+	MONITOR_break_xex = TRUE;
+}
+
 
 /* called from atari.c, for -bpc CLI arg. */
 void MONITOR_BPC(char *arg)

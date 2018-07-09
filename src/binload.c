@@ -33,6 +33,7 @@
 #include "log.h"
 #include "memory.h"
 #include "sio.h"
+#include "monitor.h"
 
 int BINLOAD_start_binloading = FALSE;
 int BINLOAD_loading_basic = 0;
@@ -71,6 +72,18 @@ static int read_word(void)
 	return buf[0] + (buf[1] << 8);
 }
 
+static void set_breakpoint_on(UWORD addr) {
+	if (!MONITOR_break_xex) return;
+
+	Log_print("set breakpoint at %04X\n", addr);
+	MONITOR_set_breakpoint(MONITOR_breakpoint_table_size, MONITOR_BREAKPOINT_PC | MONITOR_BREAKPOINT_EQUAL, addr, 0);
+
+}
+static void set_breakpoint_on_start(void) {
+	UWORD addr = MEMORY_dGetWordAligned(0x2e0);
+	set_breakpoint_on(addr);
+}
+
 /* Start or continue loading */
 static void loader_cont(void)
 {
@@ -92,15 +105,18 @@ static void loader_cont(void)
 			do
 				temp = read_word();
 			while (temp == 0xffff);
-			if (temp < 0)
+			if (temp < 0) {
+				set_breakpoint_on_start();
 				return;
+			}
 			from = (UWORD) temp;
 
 			temp = read_word();
-			if (temp < 0)
+			if (temp < 0) {
+				set_breakpoint_on_start();
 				return;
+			}
 			to = (UWORD) temp;
-
 			if (BINLOAD_start_binloading) {
 				MEMORY_dPutWordAligned(0x2e0, from);
 				BINLOAD_start_binloading = FALSE;
@@ -135,6 +151,7 @@ static void loader_cont(void)
 					MEMORY_dPutByte(0x0100 + CPU_regS--, CPU_regPC & 0xff);	/* low */
 					CPU_regPC = MEMORY_dGetWordAligned(0x2e2);
 				}
+				set_breakpoint_on(CPU_regPC);
 				return;
 			}
 			MEMORY_PutByte(from, (UBYTE) byte);
@@ -142,7 +159,6 @@ static void loader_cont(void)
 		} while (from != to);
 		segfinished = TRUE;
 	} while (MEMORY_dGetByte(0x2e3) == 0xd7);
-
 	CPU_regS--;
 	ESC_Add((UWORD) (0x100 + CPU_regS), ESC_BINLOADER_CONT, loader_cont);
 	CPU_regS--;
@@ -154,6 +170,7 @@ static void loader_cont(void)
 
 	MEMORY_dPutByte(0x0300, 0x31);	/* for "Studio Dream" */
 	init2e3 = TRUE;
+	set_breakpoint_on(CPU_regPC);
 }
 
 /* Fake boot sector to call loader_cont at boot time */

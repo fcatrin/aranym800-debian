@@ -67,6 +67,10 @@ extern MONITOR_breakpoint_cond MONITOR_breakpoint_table[MONITOR_BREAKPOINT_TABLE
 extern int MONITOR_breakpoint_table_size;
 extern int MONITOR_breakpoints_enabled;
 
+void MONITOR_set_breakpoint(int position, int condition, UWORD value, UWORD m_addr);
+extern UBYTE MONITOR_break_xex;
+void MONITOR_BBRK_XEX_on(void);
+
 #endif /* MONITOR_BREAKPOINTS */
 
 #ifdef MONITOR_PROFILE

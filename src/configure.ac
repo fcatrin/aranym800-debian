@@ -29,7 +29,7 @@ AC_CONFIG_HEADER(config.h)
 dnl Set a8_target...
 
 case "$target" in
-    default | falcon | ps2 | rpi | android | windx | x11 | x11-shm | x11-motif | x11-xview | x11-xview-shm | jni)
+    default | falcon | ps2 | rpi | android | windx | x11 | x11-shm | x11-motif | x11-xview | x11-xview-shm | java)
         a8_target="$target"
         ;;
     shm | motif | xview | xview-shm)
@@ -56,7 +56,7 @@ case "$target" in
         echo "    (x11-)shm        (Standard X11 with shared memory extensions)"
         echo "    (x11-)xview      (XView on X11)"
         echo "    (x11-)xview-shm  (XView on X11, with shared memory extensions)"
-        echo "    jni              (build as a library for Java)"
+        echo "    java             (build as a library for Java)"
         echo
         exit 1;
         ;;
@@ -160,7 +160,7 @@ if [[ "$a8_target" = "falcon" ]]; then
 	CFLAGS="-m68020-60 -O3 -fomit-frame-pointer -Wall"
 	LDFLAGS="-m68020-60"
 fi
-if [[ "$a8_target" = "jni" ]]; then
+if [[ "$a8_target" = "java" ]]; then
    AC_NO_EXECUTABLES
    CFLAGS="$CFLAGS -I$JAVA_HOME/include/"
    LDFLAGS="-shared"
@@ -177,9 +177,9 @@ AC_PROG_CC
 AC_PROG_INSTALL
 
 LIBPREFIX=
-if [[ "$a8_target" = "jni" ]]; then
+if [[ "$a8_target" = "java" ]]; then
    EXEEXT=".so"
-   LIBPREFIX=lib
+   LIBPREFIX=java/libs/lib
 fi
 
 a8_use_sdl=no
@@ -216,7 +216,7 @@ dnl Don't make this a windowed app, make it a console app.
 ])
 
 dnl Check if host os Java NestedVM...
-if [[ "$a8_target" != "android" -a "$a8_target" != "jni" ]]; then
+if [[ "$a8_target" != "android" -a "$a8_target" != "java" ]]; then
     dnl Android neither JNI target cannot perform link tests
     AC_MSG_CHECKING([whether host is Java NestedVM])
     AC_LINK_IFELSE(
@@ -540,10 +540,10 @@ fi
 dnl Select/detect video interface.
 
 AC_ARG_WITH([video],
-    [AC_HELP_STRING([--with-video@<:@=no|yes|curses|ncurses|pdcurses|dosvga|sdl|jni|javanvm@:>@],[Select video interface to use @<:@default=check@:>@])],
+    [AC_HELP_STRING([--with-video@<:@=no|yes|curses|ncurses|pdcurses|dosvga|sdl|java|javanvm@:>@],[Select video interface to use @<:@default=check@:>@])],
     [
         case "$withval" in
-            no | yes | check | curses | ncurses | pdcurses | dosvga | sdl | javanvm | jni)
+            no | yes | check | curses | ncurses | pdcurses | dosvga | sdl | javanvm | java)
                 ;;
             *)
                 AC_MSG_ERROR([unrecognized value for --with-video: "$withval"])
@@ -552,9 +552,9 @@ AC_ARG_WITH([video],
     ],
     [with_video=check])
 
-if [[ "$a8_target" = default -o "$a8_target" = jni ]]; then
-    if [[ "$a8_target" = jni ]]; then
-        with_video=jni
+if [[ "$a8_target" = default -o "$a8_target" = java ]]; then
+    if [[ "$a8_target" = java ]]; then
+        with_video=java
     fi
 
     if [[ "$with_video" != no ]]; then
@@ -621,10 +621,10 @@ if [[ "$a8_target" = default -o "$a8_target" = jni ]]; then
             AC_DEFINE(SUPPORTS_PLATFORM_SLEEP,1,[Platform-specific sleep function.])
             OBJS="javanvm/main.o javanvm/video.o javanvm/input.o"
             ;;
-        jni)
+        java)
             AC_DEFINE(SUPPORTS_PLATFORM_PALETTEUPDATE,1,[Update the Palette if it changed.])
             AC_DEFINE(SUPPORTS_PLATFORM_SLEEP,1,[Platform-specific sleep function.])
-            OBJS="jni/main.o jni/video.o jni/input.o"
+            OBJS="java/jni/main.o java/jni/video.o java/jni/input.o"
             ;;
         sdl)
             AC_DEFINE(GUI_SDL,1,[Use SDL for graphics and input.])
@@ -836,10 +836,10 @@ fi
 dnl Select/detect sound interface.
 
 AC_ARG_WITH([sound],
-    [AC_HELP_STRING([--with-sound@<:@=no|yes|dossb|oss|falcon|win|sdl|jni|javanvm@:>@],[Select sound interface to use @<:@default=check@:>@])],
+    [AC_HELP_STRING([--with-sound@<:@=no|yes|dossb|oss|falcon|win|sdl|java|javanvm@:>@],[Select sound interface to use @<:@default=check@:>@])],
     [
         case "$withval" in
-            no | yes | check | dossb | oss | falcon | win | sdl | jni | javanvm)
+            no | yes | check | dossb | oss | falcon | win | sdl | java | javanvm)
                 ;;
             *)
                 AC_MSG_ERROR([unrecognized value for --with-sound: "$withval"])
@@ -849,8 +849,8 @@ AC_ARG_WITH([sound],
     [with_sound=check])
 
 if [[ "$a8_target" != "ps2" -a "$a8_target" != "android" ]]; then
-    if [[ "$a8_target" = jni ]]; then
-        with_sound=jni
+    if [[ "$a8_target" = java ]]; then
+        with_sound=java
     fi
     if [[ "$with_sound" != no ]]; then
         if [[ "$with_sound" = check -o "$with_sound" = yes -o "$with_sound" = javanvm ]]; then
@@ -908,9 +908,9 @@ if [[ "$a8_target" != "ps2" -a "$a8_target" != "android" ]]; then
             WANT_SOUND_THIN_API=yes
             OBJS="$OBJS javanvm/sound.o"
             ;;
-        jni)
+        java)
             WANT_SOUND_THIN_API=yes
-            OBJS="$OBJS jni/sound.o"
+            OBJS="$OBJS java/jni/sound.o"
             ;;
         sdl)
             WANT_SOUND_THIN_API=yes

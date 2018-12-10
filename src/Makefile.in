@@ -129,7 +129,7 @@ clean:
 	rm -f sdl/*.o sdl/*.bak sdl/*~
 	rm -f win32/*.o win32/*.ro win32/*.bak win32/*~
 	rm -f javanvm/*.o javanvm/*.bak javanvm/*~
-	rm -f jni/*.o jni/*.bak jni/*~
+	rm -f java/jni/*.o java/jni/*.bak java/jni/*~ 
 	rm -f atari_ntsc/*.o atari_ntsc/*.bak atari_ntsc/*~
 	rm -rf android/libs android/obj android/bin android/gen
 

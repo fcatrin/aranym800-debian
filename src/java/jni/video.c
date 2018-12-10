@@ -38,10 +38,6 @@ static void JAVANVM_DisplayScreen(void *as)
 	_call_java(JAVANVM_FUN_DisplayScreen, (int)as, 0, 0);
 }
 
-static void JAVANVM_InitPalette(void *ct)
-{
-	_call_java(JAVANVM_FUN_InitPalette, (int)ct, 0, 0);
-}
 
 static int JAVANVM_InitGraphics(void *config)
 {
@@ -50,7 +46,7 @@ static int JAVANVM_InitGraphics(void *config)
 
 void PLATFORM_PaletteUpdate(void)
 {
-	JAVANVM_InitPalette((void *)&Colours_table[0]);
+	JAVA_InitPalette(Colours_table);
 }
 
 int JAVANVM_VIDEO_Initialise(int *argc, char *argv[])
@@ -91,7 +87,7 @@ int JAVANVM_VIDEO_Initialise(int *argc, char *argv[])
         config[JAVANVM_InitGraphicsATARI_VISIBLE_WIDTH] = 336;
         config[JAVANVM_InitGraphicsATARI_LEFT_MARGIN] = 24;
 		JAVANVM_InitGraphics((void *)&config[0]);
-		JAVANVM_InitPalette((void *)&Colours_table[0]);
+		JAVA_InitPalette(Colours_table);
 	}
 	return TRUE;
 }

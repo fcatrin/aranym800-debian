@@ -162,7 +162,7 @@ if [[ "$a8_target" = "falcon" ]]; then
 fi
 if [[ "$a8_target" = "java" ]]; then
    AC_NO_EXECUTABLES
-   CFLAGS="$CFLAGS -I$JAVA_HOME/include/ -fPIC"
+   CFLAGS="$CFLAGS -I$JAVA_HOME/include/ -I$JAVA_HOME/include/linux -fPIC"
    LDFLAGS="-shared"
    WANT_IDE=no
    with_readline=no
@@ -1030,6 +1030,10 @@ else
     WANT_SERIO_SOUND="no"
     WANT_CLIP_SOUND="no"
     WANT_PBI_XLD_SOUND="no"
+fi
+
+if [[ "$a8_target" = "java" ]]; then
+   OBJS="$OBJS java/jni/java.o java/jni/nativeclass.o"
 fi
 
 A8_OPTION(ide,$WANT_IDE,

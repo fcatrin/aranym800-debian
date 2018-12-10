@@ -1,8 +1,8 @@
-#include "jni/nativeclass.h"
-
 #include <stdlib.h>
+#include <string.h>
 #include <stdarg.h>
 #include <jni.h>
+#include "nativeclass.h"
 
 #ifdef MT_TRACE
 	#ifdef __ANDROID__

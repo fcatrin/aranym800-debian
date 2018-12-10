@@ -273,4 +273,14 @@ enum {
 	VK_Z = 90
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void JAVA_InitPalette(int colors[]);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* JAVANVM_H_ */

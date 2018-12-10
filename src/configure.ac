@@ -162,7 +162,7 @@ if [[ "$a8_target" = "falcon" ]]; then
 fi
 if [[ "$a8_target" = "java" ]]; then
    AC_NO_EXECUTABLES
-   CFLAGS="$CFLAGS -I$JAVA_HOME/include/"
+   CFLAGS="$CFLAGS -I$JAVA_HOME/include/ -fPIC"
    LDFLAGS="-shared"
    WANT_IDE=no
    with_readline=no

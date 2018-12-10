@@ -29,11 +29,12 @@
 #include <string.h>
 
 /* Atari800 includes */
-#include "../input.h"
+#include "../../input.h"
 #include "monitor.h"
 #include "platform.h"
 #include "sound.h"
-#include "javanvm/javanvm.h"
+#include "java/jni/video.h"
+#include "java/jni/java.h"
 
 /* These functions call the NestedVM runtime */
 static int JAVANVM_Sleep(int millis)

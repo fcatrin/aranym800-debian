@@ -72,6 +72,8 @@ static int read_word(void)
 	return buf[0] + (buf[1] << 8);
 }
 
+#ifdef MONITOR_BREAKPOINTS_SIMPLE
+
 static void set_breakpoint_on(UWORD addr) {
 	if (!MONITOR_break_xex) return;
 
@@ -79,10 +81,18 @@ static void set_breakpoint_on(UWORD addr) {
 	MONITOR_set_breakpoint(MONITOR_breakpoint_table_size, MONITOR_BREAKPOINT_PC | MONITOR_BREAKPOINT_EQUAL, addr, 0);
 
 }
+
 static void set_breakpoint_on_start(void) {
 	UWORD addr = MEMORY_dGetWordAligned(0x2e0);
 	set_breakpoint_on(addr);
 }
+
+#else
+
+static void set_breakpoint_on(UWORD addr) {}
+static void set_breakpoint_on_start(void) {}
+
+#endif
 
 /* Start or continue loading */
 static void loader_cont(void)

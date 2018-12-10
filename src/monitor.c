@@ -3518,11 +3518,18 @@ void MONITOR_BBRK_on(void)
 	MONITOR_break_brk = TRUE;
 }
 
+#ifdef MONITOR_BREAKPOINTS
+
 void MONITOR_BBRK_XEX_on(void)
 {
 	MONITOR_break_xex = TRUE;
 }
 
+#else
+
+void MONITOR_BBRK_XEX_on(void) {}
+
+#endif
 
 /* called from atari.c, for -bpc CLI arg. */
 void MONITOR_BPC(char *arg)

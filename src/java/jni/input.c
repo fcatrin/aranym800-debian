@@ -23,15 +23,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "javanvm/input.h"
+#include "java/jni/input.h"
 
 #include "akey.h"
 #include "atari.h"
 #include "binload.h"
-#include "../input.h"
+#include "../../input.h"
 #include "platform.h"
 #include "ui.h"
-#include "javanvm/javanvm.h"
+#include "java/jni/java.h"
 
 /* joystick emulation */
 

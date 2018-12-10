@@ -626,6 +626,7 @@ ac_includes_default="\
 ac_subst_vars='LTLIBOBJS
 CONFIGURE_HOST
 CONFIGURE_TARGET
+LIBPREFIX
 JAVACFLAGS
 JAVAFLAGS
 OBJS
@@ -2568,16 +2569,15 @@ if [ "$a8_target" = "falcon" ]; then
 fi
 if [ "$a8_target" = "jni" ]; then
 
-   CFLAGS="$CPPFLAGS -I$JAVA_HOME/include/"
-   # LDFLAGS="-shared"
-   EXEEXT=".so"
+   CFLAGS="$CFLAGS -I$JAVA_HOME/include/"
+   LDFLAGS="-shared"
    WANT_IDE=no
    with_readline=no
    WANT_EVENT_RECORDING=no
+   cross_compiling=yes
    $as_echo "#define HAVE_GETTIMEOFDAY 1" >>confdefs.h
 
 fi
-
 
 
 ac_ext=c
@@ -3539,10 +3539,16 @@ test -z "$INSTALL_SCRIPT" && INSTALL_SCRIPT='${INSTALL}'
 test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 
 
+LIBPREFIX=
+if [ "$a8_target" = "jni" ]; then
+   EXEEXT=".so"
+   LIBPREFIX=lib
+fi
+
 a8_use_sdl=no
 
 
-if [ "$a8_target" != "android" ]; then
+if [ "$a8_target" != "android" -a "$a8_target" != "jni" ]; then
         { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether host is Java NestedVM" >&5
 $as_echo_n "checking whether host is Java NestedVM... " >&6; }
     if test x$ac_no_link = xyes; then
@@ -9718,6 +9724,7 @@ fi
         fi
     fi
 fi
+
 
 
 

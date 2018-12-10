@@ -162,20 +162,25 @@ if [[ "$a8_target" = "falcon" ]]; then
 fi
 if [[ "$a8_target" = "jni" ]]; then
    AC_NO_EXECUTABLES
-   CFLAGS="$CPPFLAGS -I$JAVA_HOME/include/"
-   # LDFLAGS="-shared"
-   EXEEXT=".so"
+   CFLAGS="$CFLAGS -I$JAVA_HOME/include/"
+   LDFLAGS="-shared"
    WANT_IDE=no
    with_readline=no
    WANT_EVENT_RECORDING=no
+   cross_compiling=yes
    AC_DEFINE(HAVE_GETTIMEOFDAY,1)
 fi
-
 
 dnl Check for programs...
 
 AC_PROG_CC
 AC_PROG_INSTALL
+
+LIBPREFIX=
+if [[ "$a8_target" = "jni" ]]; then
+   EXEEXT=".so"
+   LIBPREFIX=lib
+fi
 
 a8_use_sdl=no
 dnl Check if SDL library exists. If it's found, set a8_use_sdl to yes and AC_DEFINE the SDL symbol.
@@ -211,8 +216,8 @@ dnl Don't make this a windowed app, make it a console app.
 ])
 
 dnl Check if host os Java NestedVM...
-if [[ "$a8_target" != "android" ]]; then
-    dnl Android target cannot perform link tests
+if [[ "$a8_target" != "android" -a "$a8_target" != "jni" ]]; then
+    dnl Android neither JNI target cannot perform link tests
     AC_MSG_CHECKING([whether host is Java NestedVM])
     AC_LINK_IFELSE(
         [AC_LANG_PROGRAM(
@@ -1191,6 +1196,7 @@ dnl Wrapup: export OBJS and write Makefile...
 AC_SUBST(OBJS)
 AC_SUBST(JAVAFLAGS)
 AC_SUBST(JAVACFLAGS)
+AC_SUBST(LIBPREFIX)
 CONFIGURE_TARGET="$target"
 AC_SUBST(CONFIGURE_TARGET)
 CONFIGURE_HOST="$a8_host"

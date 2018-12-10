@@ -4,7 +4,7 @@ RC = windres
 DEFS = @DEFS@
 LIBS = @LIBS@
 TARGET_BASE_NAME = atari800
-TARGET = $(TARGET_BASE_NAME)@EXEEXT@
+TARGET = @LIBPREFIX@$(TARGET_BASE_NAME)@EXEEXT@
 CONFIGURE_TARGET = @CONFIGURE_TARGET@
 CONFIGURE_HOST = @CONFIGURE_HOST@
 ifeq (@CONFIGURE_HOST@, javanvm)
@@ -129,6 +129,7 @@ clean:
 	rm -f sdl/*.o sdl/*.bak sdl/*~
 	rm -f win32/*.o win32/*.ro win32/*.bak win32/*~
 	rm -f javanvm/*.o javanvm/*.bak javanvm/*~
+	rm -f jni/*.o jni/*.bak jni/*~
 	rm -f atari_ntsc/*.o atari_ntsc/*.bak atari_ntsc/*~
 	rm -rf android/libs android/obj android/bin android/gen
 

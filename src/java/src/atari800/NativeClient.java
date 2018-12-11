@@ -17,4 +17,5 @@ public interface NativeClient {
 			boolean isSigned, boolean bigEndian, 
 			int bufferSize);	
 	public void soundExit();
+	public int  soundAvailable();
 }

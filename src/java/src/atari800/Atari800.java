@@ -340,11 +340,6 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 			rt.setCallJavaCB(new Runtime.CallJavaCB() {
 				public int call(int a, int b, int c, int d) {
 					switch(a) {
-						case 10:
-							/*static int JAVANVM_SoundAvailable(void){
-								return _call_java(9, 0, 0, 0);
-							}*/
-							return line.available();
 						case 11:
 							/*static int JAVANVM_SoundWrite(void const *buffer,int len){
 								return _call_java(10, (int)buffer, len, 0);
@@ -440,6 +435,11 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 	@Override
 	public void soundExit() {
 		line.close();
+	}
+
+	@Override
+	public int soundAvailable() {
+		return line.available();
 	}
 	
 }

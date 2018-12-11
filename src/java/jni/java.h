@@ -26,12 +26,6 @@
 #ifndef JAVANVM_H_
 #define JAVANVM_H_
 
-extern int _call_java(int a, int b, int c, int d);
-
-enum {
-	JAVANVM_FUN_CheckThreadStatus = 14
-};
-
 /* These constants are for use with arrays passed to and from the NestedVM runtime */
 enum {
 	JAVANVM_KeyEventType = 0,
@@ -267,6 +261,8 @@ int  JAVA_SoundAvailable();
 int  JAVA_SoundWrite(UBYTE const buffer[],unsigned int len);
 void JAVA_SoundPause();
 void JAVA_SoundContinue();
+
+int JAVA_CheckThreadStatus();
 
 #ifdef __cplusplus
 }

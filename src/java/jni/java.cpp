@@ -134,3 +134,7 @@ extern "C" void JAVA_SoundContinue() {
 	nativeClientClass->callVoidMethod(nativeClient, "soundContinue", "()V");
 }
 
+extern "C" int JAVA_CheckThreadStatus() {
+	return nativeClientClass->callIntMethod(nativeClient, "checkThreadStatus", "()V");
+}
+

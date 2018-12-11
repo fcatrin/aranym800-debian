@@ -38,11 +38,6 @@
 
 /* These functions call the NestedVM runtime */
 
-static int JAVANVM_CheckThreadStatus(void)
-{
-	return _call_java(JAVANVM_FUN_CheckThreadStatus, 0, 0, 0);
-}
-
 int PLATFORM_Initialise(int *argc, char *argv[])
 {
 	if (!JAVANVM_VIDEO_Initialise(argc, argv)
@@ -91,7 +86,7 @@ int main(int argc, char **argv)
 		Atari800_Frame();
 		if (Atari800_display_screen)
 			PLATFORM_DisplayScreen();
-		if (JAVANVM_CheckThreadStatus()) {
+		if (JAVA_CheckThreadStatus()) {
 		   	Atari800_Exit(FALSE);
 			exit(0);
 		}

@@ -310,12 +310,14 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 		app.main2(args);
 	}
 
+	Thread thisThread;
+	
 	// used by both Application and Applet
 	public void main2(String[] args) {
 		//Place holder for command line arguments
 		String[] appArgs = new String[args.length +1];
 		try {
-			final Thread thisThread = Thread.currentThread();
+			thisThread = Thread.currentThread();
 			//Application name
 			appArgs[0] = "atari800";
 			//Fill in the rest of the command line arguments
@@ -340,25 +342,6 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 			rt.setCallJavaCB(new Runtime.CallJavaCB() {
 				public int call(int a, int b, int c, int d) {
 					switch(a) {
-						case 14:
-							/*static int JAVANVM_CheckThreadStatus(void){
-								return _call_java(13, 0, 0, 0);
-							}*/
-							if (isApplet && threadSuspended) {
-								if (line!=null) line.stop();
-								try {
-									synchronized(this) {
-										while (threadSuspended && thread == thisThread) {
-										   	wait();
-										}
-									}
-								} catch (InterruptedException e) {}
-								if (thread != thisThread) {
-									return 1;
-								}
-								if (line!=null) line.start();
-							}
-							return 0;
 						default:
 							return 0;
 					}
@@ -432,6 +415,25 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 	@Override
 	public void soundContinue() {
 		line.start();
+	}
+
+	@Override
+	public int checkThreadStatus() {
+		if (isApplet && threadSuspended) {
+			if (line!=null) line.stop();
+			try {
+				synchronized(this) {
+					while (threadSuspended && thread == thisThread) {
+					   	wait();
+					}
+				}
+			} catch (InterruptedException e) {}
+			if (thread != thisThread) {
+				return 1;
+			}
+			if (line!=null) line.start();
+		}
+		return 0;
 	}
 	
 }

@@ -37,10 +37,6 @@
 #include "java/jni/java.h"
 
 /* These functions call the NestedVM runtime */
-static int JAVANVM_Sleep(int millis)
-{
-	return _call_java(JAVANVM_FUN_Sleep, millis, 0, 0);
-}
 
 static int JAVANVM_CheckThreadStatus(void)
 {
@@ -80,7 +76,7 @@ int PLATFORM_Exit(int run_monitor){
 }
 
 void PLATFORM_Sleep(double s){
-	JAVANVM_Sleep((int)(s*1e3));
+	JAVA_Sleep((int)(s*1e3));
 }
 
 int main(int argc, char **argv)

@@ -29,7 +29,6 @@
 extern int _call_java(int a, int b, int c, int d);
 
 enum {
-	JAVANVM_FUN_Sleep = 6,
 	JAVANVM_FUN_InitGraphics = 7,
 	JAVANVM_FUN_InitSound = 8,
 	JAVANVM_FUN_SoundExit = 9,
@@ -277,6 +276,7 @@ void JAVA_DisplayScreen(unsigned int screen[], int size);
 int  JAVA_Kbhits(int key, int loc);
 int  JAVA_PollKeyEvent(int atari_event[]);
 int  JAVA_GetWindowClosed();
+void JAVA_Sleep(long msec);
 
 #ifdef __cplusplus
 }

@@ -72,3 +72,8 @@ extern "C" int JAVA_GetWindowClosed() {
 	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
 	return nativeClientClass.callBooleanMethod(nativeClient, "getWindowClosed", "()Z");
 }
+
+extern "C" void JAVA_Sleep(long msec) {
+	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
+	nativeClientClass.callVoidMethod(nativeClient, "sleep", "(L)V");
+}

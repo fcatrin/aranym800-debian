@@ -6,4 +6,5 @@ public interface NativeClient {
 	public int  getKbhits(int key, int loc);
 	public int  pollKeyEvent(int atari_event[]);
 	public boolean getWindowClosed();
+	public void sleep(long msec);
 }

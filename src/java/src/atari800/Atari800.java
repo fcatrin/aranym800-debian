@@ -179,8 +179,8 @@ class AtariCanvas extends Canvas implements KeyListener {
 	}
 
 	/* 1 if the Window was closed */
-	int getWindowClosed(){
-		return windowClosed ? 1 : 0;
+	boolean getWindowClosed(){
+		return windowClosed;
 	}
 }
 
@@ -337,14 +337,6 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 			rt.setCallJavaCB(new Runtime.CallJavaCB() {
 				public int call(int a, int b, int c, int d) {
 					switch(a) {
-						case 6:
-							/*static int JAVANVM_Sleep(int millis){
-								return _call_java(6, millis, 0, 0);
-							}*/
-							try {
-								Thread.sleep((long)b);
-							} catch(Exception e) {}
-							return 0;
 						case 7:
 							/*static int JAVANVM_InitGraphics(void *config){
 								return _call_java(7, (int)config, 0, 0);
@@ -485,6 +477,13 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 	@Override
 	public boolean getWindowClosed() {
 		return canvas.getWindowClosed();
+	}
+
+	@Override
+	public void sleep(long msec) {
+		try {
+			Thread.sleep(msec);
+		} catch(Exception e) {}
 	}
 	
 }

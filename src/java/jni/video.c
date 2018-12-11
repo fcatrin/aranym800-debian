@@ -23,14 +23,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "javanvm/video.h"
+#include "java/jni/video.h"
 
 #include "colours.h"
 #include "screen.h"
 #include "log.h"
 #include "platform.h"
 #include "util.h"
-#include "javanvm/javanvm.h"
+#include "java/jni/java.h"
 
 /* These functions call the NestedVM runtime */
 
@@ -41,7 +41,7 @@ static int JAVANVM_InitGraphics(void *config)
 
 void PLATFORM_PaletteUpdate(void)
 {
-	JAVA_InitPalette(Colours_table);
+	JAVA_InitPalette(Colours_table, 256);
 }
 
 int JAVANVM_VIDEO_Initialise(int *argc, char *argv[])
@@ -82,7 +82,7 @@ int JAVANVM_VIDEO_Initialise(int *argc, char *argv[])
         config[JAVANVM_InitGraphicsATARI_VISIBLE_WIDTH] = 336;
         config[JAVANVM_InitGraphicsATARI_LEFT_MARGIN] = 24;
 		JAVANVM_InitGraphics((void *)&config[0]);
-		JAVA_InitPalette(Colours_table);
+		JAVA_InitPalette(Colours_table, 256);
 	}
 	return TRUE;
 }

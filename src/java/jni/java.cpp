@@ -38,10 +38,10 @@ extern "C" void JAVA_InitPalette(int colors[], int size) {
 	}
 }
 
-extern "C" void JAVA_DisplayScreen(int screen[], int size) {
+extern "C" void JAVA_DisplayScreen(unsigned int screen[], int size) {
 	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
 
-	jintArray array = newIntArray(screen, size);
+	jintArray array = newIntArray((int *)screen, size);
 	if (array != NULL) {
 		nativeClientClass.callVoidMethod(nativeClient, "displayScreen", "([I)V", array);
 	}

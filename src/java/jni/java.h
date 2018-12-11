@@ -29,7 +29,6 @@
 extern int _call_java(int a, int b, int c, int d);
 
 enum {
-	JAVANVM_FUN_PollKeyEvent = 4,
 	JAVANVM_FUN_GetWindowClosed = 5,
 	JAVANVM_FUN_Sleep = 6,
 	JAVANVM_FUN_InitGraphics = 7,

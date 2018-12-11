@@ -93,13 +93,12 @@ class AtariCanvas extends Canvas implements KeyListener {
 		image = createImage(mis);
 	}
 
-	public void displayScreen(Runtime rt, int atari_screen){
-		int ao = atari_screen + atari_left_margin;
+	public void displayScreen(int atari_screen[]){
+		int ao = atari_left_margin;
 		int po = 0;
 		for(int h=0; h<240;h++){
 			try {
-				rt.copyin(ao,temp,width);
-				System.arraycopy(temp,0,pixels,po,width);
+				System.arraycopy(atari_screen, ao,pixels,po,width);
 			} catch(Exception e) {
 				System.err.println(e);
 			}
@@ -494,7 +493,11 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 	public void initPalette(int[] colors) {
 		canvas.initPalette(colors);
 	}
-	
+
+	@Override
+	public void displayScreen(int[] atari_screen) {
+		canvas.displayScreen(atari_screen);
+	}
 	
 }
 

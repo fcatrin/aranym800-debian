@@ -33,11 +33,6 @@
 #include "javanvm/javanvm.h"
 
 /* These functions call the NestedVM runtime */
-static void JAVANVM_DisplayScreen(void *as)
-{
-	_call_java(JAVANVM_FUN_DisplayScreen, (int)as, 0, 0);
-}
-
 
 static int JAVANVM_InitGraphics(void *config)
 {
@@ -93,6 +88,5 @@ int JAVANVM_VIDEO_Initialise(int *argc, char *argv[])
 }
 
 void PLATFORM_DisplayScreen(void){
-	JAVANVM_DisplayScreen((void *)Screen_atari);
-	return;
+	JAVA_DisplayScreen(Screen_atari, Screen_HEIGHT * Screen_WIDTH);
 }

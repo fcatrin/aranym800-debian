@@ -277,7 +277,7 @@ enum {
 extern "C" {
 #endif
 
-void JAVA_InitPalette(int colors[]);
+void JAVA_InitPalette(int colors[], int size);
 
 #ifdef __cplusplus
 }

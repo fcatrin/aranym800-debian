@@ -34,11 +34,6 @@
 
 /* These functions call the NestedVM runtime */
 
-static int JAVANVM_InitGraphics(void *config)
-{
-	return _call_java(JAVANVM_FUN_InitGraphics, (int)config, 0, 0);
-}
-
 void PLATFORM_PaletteUpdate(void)
 {
 	JAVA_InitPalette(Colours_table, 256);
@@ -74,14 +69,9 @@ int JAVANVM_VIDEO_Initialise(int *argc, char *argv[])
 	*argc = j;
 
 	if (!help_only) {
-        int config[JAVANVM_InitGraphicsSIZE];
-        config[JAVANVM_InitGraphicsScalew] = scale;
-        config[JAVANVM_InitGraphicsScaleh] = scale;
-        config[JAVANVM_InitGraphicsScreen_WIDTH] = Screen_WIDTH;
-        config[JAVANVM_InitGraphicsScreen_HEIGHT] = Screen_HEIGHT;
-        config[JAVANVM_InitGraphicsATARI_VISIBLE_WIDTH] = 336;
-        config[JAVANVM_InitGraphicsATARI_LEFT_MARGIN] = 24;
-		JAVANVM_InitGraphics((void *)&config[0]);
+		JAVA_InitGraphics(scale, scale,
+				Screen_WIDTH, Screen_HEIGHT,
+				336, 24);
 		JAVA_InitPalette(Colours_table, 256);
 	}
 	return TRUE;

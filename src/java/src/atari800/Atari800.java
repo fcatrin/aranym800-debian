@@ -204,7 +204,8 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 		frame = f;
 	}
 
-	private void initGraphics(int scalew, int scaleh, int atari_width, int atari_height, int atari_visible_width, int atari_left_margin){
+	@Override
+	public void initGraphics(int scalew, int scaleh, int atari_width, int atari_height, int atari_visible_width, int atari_left_margin){
 		canvas = new AtariCanvas();
 		canvas.atari_width = atari_width;
 		canvas.atari_height = atari_height;
@@ -337,28 +338,6 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 			rt.setCallJavaCB(new Runtime.CallJavaCB() {
 				public int call(int a, int b, int c, int d) {
 					switch(a) {
-						case 7:
-							/*static int JAVANVM_InitGraphics(void *config){
-								return _call_java(7, (int)config, 0, 0);
-							}*/
-							int scaleh = 2;
-							int scalew = 2;
-							int atari_width = 384;
-							int atari_height = 240;
-							int atari_visible_width = 336;
-							int atari_left_margin = 24;
-							try {
-								scalew = rt.memRead(b+4*0);
-								scaleh = rt.memRead(b+4*1);
-								atari_width = rt.memRead(b+4*2);
-								atari_height = rt.memRead(b+4*3);
-								atari_visible_width = rt.memRead(b+4*4);
-								atari_left_margin = rt.memRead(b+4*5);
-							} catch(Exception e) {
-								System.err.println(e);
-							}
-							initGraphics(scaleh,scalew,atari_width,atari_height,atari_visible_width,atari_left_margin);
-							return 0;
 						case 8:
 							/*static int JAVANVM_InitSound(void *config){
 								return _call_java(8, (int)config, 0, 0);

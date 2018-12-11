@@ -77,3 +77,13 @@ extern "C" void JAVA_Sleep(long msec) {
 	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
 	nativeClientClass.callVoidMethod(nativeClient, "sleep", "(L)V");
 }
+
+extern "C" void JAVA_InitGraphics(
+		int scaleh, int scalew,
+		int atari_width, int atari_height,
+		int atari_visible_width,
+		int atari_left_margin) {
+
+	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
+	nativeClientClass.callVoidMethod(nativeClient, "initGraphics", "(IIIIII)V");
+}

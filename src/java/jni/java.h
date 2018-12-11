@@ -29,7 +29,6 @@
 extern int _call_java(int a, int b, int c, int d);
 
 enum {
-	JAVANVM_FUN_InitGraphics = 7,
 	JAVANVM_FUN_InitSound = 8,
 	JAVANVM_FUN_SoundExit = 9,
 	JAVANVM_FUN_SoundAvailable = 10,
@@ -46,15 +45,6 @@ enum {
 	JAVANVM_KeyEventKeyChar = 2,
 	JAVANVM_KeyEventKeyLocation = 3,
 	JAVANVM_KeyEventSIZE = 4
-};
-enum {
-	JAVANVM_InitGraphicsScalew = 0,
-	JAVANVM_InitGraphicsScaleh = 1,
-	JAVANVM_InitGraphicsScreen_WIDTH = 2,
-	JAVANVM_InitGraphicsScreen_HEIGHT = 3,
-	JAVANVM_InitGraphicsATARI_VISIBLE_WIDTH = 4,
-	JAVANVM_InitGraphicsATARI_LEFT_MARGIN = 5,
-	JAVANVM_InitGraphicsSIZE = 6
 };
 enum {
 	JAVANVM_InitSoundSampleRate = 0,
@@ -277,6 +267,11 @@ int  JAVA_Kbhits(int key, int loc);
 int  JAVA_PollKeyEvent(int atari_event[]);
 int  JAVA_GetWindowClosed();
 void JAVA_Sleep(long msec);
+void JAVA_InitGraphics(
+		int scaleh, int scalew,
+		int atari_width, int atari_height,
+		int atari_visible_width,
+		int atari_left_margin);
 
 #ifdef __cplusplus
 }

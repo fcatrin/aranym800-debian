@@ -26,13 +26,10 @@
 #include "atari.h"
 #include "platform.h"
 #include "sound.h"
-#include "javanvm/javanvm.h"
+#include "java/jni/java.h"
 
 /* These functions call the NestedVM runtime */
-static int JAVANVM_SoundExit(void)
-{
-	return _call_java(JAVANVM_FUN_SoundExit, 0, 0, 0);
-}
+
 
 static int JAVANVM_SoundAvailable(void)
 {
@@ -79,7 +76,7 @@ int PLATFORM_SoundSetup(Sound_setup_t *setup)
 
 void PLATFORM_SoundExit(void)
 {
-	JAVANVM_SoundExit();
+	JAVA_SoundExit();
 }
 
 void PLATFORM_SoundPause(void)

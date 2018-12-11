@@ -16,5 +16,5 @@ public interface NativeClient {
 			int sampleRate, int bitsPerSample, int channels, 
 			boolean isSigned, boolean bigEndian, 
 			int bufferSize);	
-	
+	public void soundExit();
 }

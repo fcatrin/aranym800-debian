@@ -97,3 +97,6 @@ extern "C" int JAVA_InitSound(
 	);
 }
 
+extern "C" void JAVA_SoundExit() {
+	nativeClientClass->callVoidMethod(nativeClient, "SoundExit", "()V");
+}

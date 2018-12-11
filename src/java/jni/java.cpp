@@ -67,3 +67,8 @@ extern "C" int JAVA_PollKeyEvent(int atari_event[]) {
 	}
 	return 0;
 }
+
+extern "C" int JAVA_GetWindowClosed() {
+	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
+	return nativeClientClass.callBooleanMethod(nativeClient, "getWindowClosed", "()Z");
+}

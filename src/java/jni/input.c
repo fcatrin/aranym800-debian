@@ -78,11 +78,6 @@ static int KBD_STICK_1_RIGHTDOWN = VK_C;
 static int KBD_STICK_1_RIGHTDOWN_LOC = KEY_LOCATION_STANDARD;
 static int swap_joysticks = 0;
 
-static int JAVANVM_PollKeyEvent(void *event)
-{
-	return _call_java(JAVANVM_FUN_PollKeyEvent, (int)event, 0, 0);
-}
-
 static int JAVANVM_GetWindowClosed(void)
 {
 	return _call_java(JAVANVM_FUN_GetWindowClosed, 0, 0, 0);
@@ -101,7 +96,7 @@ int PLATFORM_Keyboard(void)
 		return AKEY_EXIT;
 	}
 
-	if (JAVANVM_PollKeyEvent(event)) {
+	if (JAVA_PollKeyEvent(event)) {
 		switch (event[JAVANVM_KeyEventType]) {
 		case KEY_PRESSED:
 			lastkey = event[JAVANVM_KeyEventKeyCode];

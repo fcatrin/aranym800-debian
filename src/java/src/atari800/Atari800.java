@@ -156,7 +156,7 @@ class AtariCanvas extends Canvas implements KeyListener {
 	}
 
 	/* event points to an array of 4 values*/
-	int pollKeyEvent(Runtime rt, int return_event){
+	int pollKeyEvent(int atari_event[]){
 		if (keyqueue.isEmpty()){
 			return 0;
 		}
@@ -168,10 +168,10 @@ class AtariCanvas extends Canvas implements KeyListener {
 		int loc = event.getKeyLocation();
 		try{
 			/* write the data to the array pointed to by event*/
-			rt.memWrite(return_event+0*4,type);
-			rt.memWrite(return_event+1*4,key);
-			rt.memWrite(return_event+2*4,(int)uni);
-			rt.memWrite(return_event+3*4,loc);
+			atari_event[0] = type;
+			atari_event[1] = key;
+			atari_event[2] = (int)uni;
+			atari_event[3] = loc;
 		} catch(Exception e) {
 			System.err.println(e);
 		}

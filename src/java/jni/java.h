@@ -277,6 +277,7 @@ extern "C" {
 void JAVA_InitPalette(int colors[], int size);
 void JAVA_DisplayScreen(unsigned int screen[], int size);
 int  JAVA_Kbhits(int key, int loc);
+int  JAVA_PollKeyEvent(int atari_event[]);
 
 #ifdef __cplusplus
 }

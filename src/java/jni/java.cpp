@@ -1,4 +1,5 @@
 #include <jni.h>
+#include "atari.h"
 #include "nativeclass.h"
 #include "java.h"
 #include "atari800_NativeInterface.h"
@@ -28,6 +29,21 @@ static jintArray newIntArray(int src[], int size) {
 	}
 
 	vm->SetIntArrayRegion(array, 0, size, fill);
+	return array;
+}
+
+static jbyteArray newByteArray(UBYTE const src[], int size) {
+	jbyteArray array = vm->NewByteArray(size);
+	if (array == NULL) {
+		return NULL; /* out of memory error thrown */
+	}
+
+	jbyte fill[size];
+	for (int i = 0; i < size; i++) {
+		fill[i] = src[i];
+	}
+
+	vm->SetByteArrayRegion(array, 0, size, fill);
 	return array;
 }
 
@@ -98,9 +114,15 @@ extern "C" int JAVA_InitSound(
 }
 
 extern "C" void JAVA_SoundExit() {
-	nativeClientClass->callVoidMethod(nativeClient, "SoundExit", "()V");
+	nativeClientClass->callVoidMethod(nativeClient, "soundExit", "()V");
 }
 
 extern "C" int JAVA_SoundAvailable() {
-	return nativeClientClass->callIntMethod(nativeClient, "SoundAvailable", "()I");
+	return nativeClientClass->callIntMethod(nativeClient, "soundAvailable", "()I");
 }
+
+extern "C" int JAVA_SoundWrite(UBYTE const buffer[], unsigned int len) {
+	jbyteArray samples = newByteArray(buffer, len);
+	return nativeClientClass->callIntMethod(nativeClient, "soudWrite", "([BI)I", samples, len);
+}
+

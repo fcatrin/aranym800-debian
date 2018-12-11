@@ -30,11 +30,6 @@
 
 /* These functions call the NestedVM runtime */
 
-static int JAVANVM_SoundWrite(void const *buffer,int len)
-{
-	return _call_java(JAVANVM_FUN_SoundWrite, (int)buffer, len, 0);
-}
-
 static int JAVANVM_SoundPause(void)
 {
 	return _call_java(JAVANVM_FUN_SoundPause, 0, 0, 0);
@@ -92,5 +87,5 @@ unsigned int PLATFORM_SoundAvailable(void)
 
 void PLATFORM_SoundWrite(UBYTE const *buffer, unsigned int size)
 {
-	JAVANVM_SoundWrite(buffer, size);
+	JAVA_SoundWrite(buffer, size);
 }

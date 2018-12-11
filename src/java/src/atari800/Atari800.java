@@ -340,18 +340,6 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 			rt.setCallJavaCB(new Runtime.CallJavaCB() {
 				public int call(int a, int b, int c, int d) {
 					switch(a) {
-						case 12:
-							/*static int JAVANVM_SoundPause(void){
-								return _call_java(11, 0, 0, 0);
-							}*/
-							line.stop();
-							return 0;
-						case 13:
-							/*static int JAVANVM_SoundContinue(void){
-								return _call_java(12, 0, 0, 0);
-							}*/
-							line.start();
-							return 0;
 						case 14:
 							/*static int JAVANVM_CheckThreadStatus(void){
 								return _call_java(13, 0, 0, 0);
@@ -434,6 +422,16 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 	@Override
 	public int soundWrite(byte[] samples, int len) {
 		return line.write(samples,0, len);
+	}
+
+	@Override
+	public void soundPause() {
+		line.stop();
+	}
+
+	@Override
+	public void soundContinue() {
+		line.start();
 	}
 	
 }

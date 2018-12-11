@@ -29,8 +29,6 @@
 extern int _call_java(int a, int b, int c, int d);
 
 enum {
-	JAVANVM_FUN_SoundPause = 12,
-	JAVANVM_FUN_SoundContinue = 13,
 	JAVANVM_FUN_CheckThreadStatus = 14
 };
 
@@ -267,6 +265,8 @@ int JAVA_InitSound(
 void JAVA_SoundExit();
 int  JAVA_SoundAvailable();
 int  JAVA_SoundWrite(UBYTE const buffer[],unsigned int len);
+void JAVA_SoundPause();
+void JAVA_SoundContinue();
 
 #ifdef __cplusplus
 }

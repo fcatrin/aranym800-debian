@@ -30,16 +30,6 @@
 
 /* These functions call the NestedVM runtime */
 
-static int JAVANVM_SoundPause(void)
-{
-	return _call_java(JAVANVM_FUN_SoundPause, 0, 0, 0);
-}
-
-static int JAVANVM_SoundContinue(void)
-{
-	return _call_java(JAVANVM_FUN_SoundContinue, 0, 0, 0);
-}
-
 int PLATFORM_SoundSetup(Sound_setup_t *setup)
 {
 	int hw_buffer_size;
@@ -71,13 +61,13 @@ void PLATFORM_SoundExit(void)
 void PLATFORM_SoundPause(void)
 {
 	/* stop audio output */
-	JAVANVM_SoundPause();
+	JAVA_SoundPause();
 }
 
 void PLATFORM_SoundContinue(void)
 {
 	/* start audio output */
-	JAVANVM_SoundContinue();
+	JAVA_SoundContinue();
 }
 
 unsigned int PLATFORM_SoundAvailable(void)

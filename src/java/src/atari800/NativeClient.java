@@ -19,4 +19,6 @@ public interface NativeClient {
 	public void soundExit();
 	public int  soundAvailable();
 	public int  soundWrite(byte samples[], int len);
+	public void soundPause();
+	public void soundContinue();
 }

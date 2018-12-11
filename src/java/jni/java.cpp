@@ -126,3 +126,11 @@ extern "C" int JAVA_SoundWrite(UBYTE const buffer[], unsigned int len) {
 	return nativeClientClass->callIntMethod(nativeClient, "soudWrite", "([BI)I", samples, len);
 }
 
+extern "C" void JAVA_SoundPause() {
+	nativeClientClass->callVoidMethod(nativeClient, "soundPause", "()V");
+}
+
+extern "C" void JAVA_SoundContinue() {
+	nativeClientClass->callVoidMethod(nativeClient, "soundContinue", "()V");
+}
+

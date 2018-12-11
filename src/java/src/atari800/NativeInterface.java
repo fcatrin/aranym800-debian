@@ -7,5 +7,5 @@ public abstract class NativeInterface {
         System.loadLibrary("atari800");
     }
     
-	public static native void setNativeClient(NativeClient nativeClient);
+	public static native void init(NativeClient nativeClient);
 }

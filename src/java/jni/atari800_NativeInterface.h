@@ -12,7 +12,7 @@ extern "C" {
  * Method:    setNativeClient
  * Signature: (Latari800/NativeClient;)V
  */
-JNIEXPORT void JNICALL Java_atari800_NativeInterface_setNativeClient
+JNIEXPORT void JNICALL Java_atari800_NativeInterface_init
   (JNIEnv *, jclass, jobject);
 
 #ifdef __cplusplus

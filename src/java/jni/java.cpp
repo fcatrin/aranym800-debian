@@ -7,11 +7,13 @@
 
 JNIEnv *vm;
 jobject nativeClient;
+NativeClass *nativeClientClass;
 
-JNIEXPORT void JNICALL Java_atari800_NativeInterface_setNativeClient
+JNIEXPORT void JNICALL Java_atari800_NativeInterface_init
   (JNIEnv *env, jclass _class, jobject client) {
 	vm = env;
 	nativeClient = client;
+	nativeClientClass = new NativeClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
 }
 
 static jintArray newIntArray(int src[], int size) {
@@ -30,33 +32,27 @@ static jintArray newIntArray(int src[], int size) {
 }
 
 extern "C" void JAVA_InitPalette(int colors[], int size) {
-	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
-
 	jintArray array = newIntArray(colors, size);
 	if (array != NULL) {
-		nativeClientClass.callVoidMethod(nativeClient, "initPalette", "([I)V", array);
+		nativeClientClass->callVoidMethod(nativeClient, "initPalette", "([I)V", array);
 	}
 }
 
 extern "C" void JAVA_DisplayScreen(unsigned int screen[], int size) {
-	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
-
 	jintArray array = newIntArray((int *)screen, size);
 	if (array != NULL) {
-		nativeClientClass.callVoidMethod(nativeClient, "displayScreen", "([I)V", array);
+		nativeClientClass->callVoidMethod(nativeClient, "displayScreen", "([I)V", array);
 	}
 }
 
 extern "C" int JAVA_Kbhits(int key, int loc) {
-	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
-	return nativeClientClass.callIntMethod(nativeClient, "getKbhits", "(II)I", key, loc);
+	return nativeClientClass->callIntMethod(nativeClient, "getKbhits", "(II)I", key, loc);
 }
 
 extern "C" int JAVA_PollKeyEvent(int atari_event[]) {
-	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
 	jintArray array = newIntArray(atari_event, 4);
 	if (array != NULL) {
-		int result = nativeClientClass.callIntMethod(nativeClient, "pollKeyEvent", "([I)I", atari_event);
+		int result = nativeClientClass->callIntMethod(nativeClient, "pollKeyEvent", "([I)I", atari_event);
 
 		jint *event = (jint *)vm->GetIntArrayElements(array, NULL);
 		for(int i=0; i<4; i++) {
@@ -69,13 +65,11 @@ extern "C" int JAVA_PollKeyEvent(int atari_event[]) {
 }
 
 extern "C" int JAVA_GetWindowClosed() {
-	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
-	return nativeClientClass.callBooleanMethod(nativeClient, "getWindowClosed", "()Z");
+	return nativeClientClass->callBooleanMethod(nativeClient, "getWindowClosed", "()Z");
 }
 
 extern "C" void JAVA_Sleep(long msec) {
-	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
-	nativeClientClass.callVoidMethod(nativeClient, "sleep", "(L)V");
+	nativeClientClass->callVoidMethod(nativeClient, "sleep", "(L)V");
 }
 
 extern "C" void JAVA_InitGraphics(
@@ -84,8 +78,7 @@ extern "C" void JAVA_InitGraphics(
 		int atari_visible_width,
 		int atari_left_margin) {
 
-	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
-	nativeClientClass.callVoidMethod(nativeClient, "initGraphics", "(IIIIII)V",
+	nativeClientClass->callVoidMethod(nativeClient, "initGraphics", "(IIIIII)V",
 			scaleh, scalew,
 			atari_width, atari_height,
 			atari_visible_width,
@@ -97,8 +90,7 @@ extern "C" int JAVA_InitSound(
 		int sampleRate, int bitsPerSample, int channels,
 		int isSigned, int bigEndian,
 		int bufferSize) {
-	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
-	return nativeClientClass.callIntMethod(nativeClient, "initSound", "(IIIZZI)I",
+	return nativeClientClass->callIntMethod(nativeClient, "initSound", "(IIIZZI)I",
 			sampleRate, bitsPerSample, channels,
 			isSigned, bigEndian,
 			bufferSize

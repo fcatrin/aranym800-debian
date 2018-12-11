@@ -29,7 +29,6 @@
 extern int _call_java(int a, int b, int c, int d);
 
 enum {
-	JAVANVM_FUN_Kbhits = 3,
 	JAVANVM_FUN_PollKeyEvent = 4,
 	JAVANVM_FUN_GetWindowClosed = 5,
 	JAVANVM_FUN_Sleep = 6,
@@ -277,6 +276,7 @@ extern "C" {
 
 void JAVA_InitPalette(int colors[], int size);
 void JAVA_DisplayScreen(unsigned int screen[], int size);
+int  JAVA_Kbhits(int key, int loc);
 
 #ifdef __cplusplus
 }

@@ -337,11 +337,6 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 			rt.setCallJavaCB(new Runtime.CallJavaCB() {
 				public int call(int a, int b, int c, int d) {
 					switch(a) {
-						case 3:
-							/*static int JAVANVM_Kbhits(int key, int loc){
-								return _call_java(3, key, loc, 0);
-							}*/
-							return canvas.getKbhits(b, c);
 						case 4:
 							/*static int JAVANVM_PollKeyEvent(void *event){
 								return _call_java(4, (int)event, 0, 0);
@@ -485,6 +480,11 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 	@Override
 	public void displayScreen(int[] atari_screen) {
 		canvas.displayScreen(atari_screen);
+	}
+
+	@Override
+	public int getKbhits(int key, int loc) {
+		return canvas.getKbhits(key, loc);
 	}
 	
 }

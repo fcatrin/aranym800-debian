@@ -78,12 +78,6 @@ static int KBD_STICK_1_RIGHTDOWN = VK_C;
 static int KBD_STICK_1_RIGHTDOWN_LOC = KEY_LOCATION_STANDARD;
 static int swap_joysticks = 0;
 
-/* These functions call the NestedVM runtime */
-static int JAVANVM_Kbhits(int key, int loc)
-{
-	return _call_java(JAVANVM_FUN_Kbhits, key, loc, 0);
-}
-
 static int JAVANVM_PollKeyEvent(void *event)
 {
 	return _call_java(JAVANVM_FUN_PollKeyEvent, (int)event, 0, 0);
@@ -127,7 +121,7 @@ int PLATFORM_Keyboard(void)
 		return AKEY_NONE;
 
 	UI_alt_function = -1;
-	if (JAVANVM_Kbhits(VK_ALT,KEY_LOCATION_LEFT)) {
+	if (JAVA_Kbhits(VK_ALT,KEY_LOCATION_LEFT)) {
 		if (key_pressed) {
 			switch (lastkey) {
 			case VK_F:
@@ -188,13 +182,13 @@ int PLATFORM_Keyboard(void)
 		}
 	}
 	/* SHIFT STATE */
-	if ((JAVANVM_Kbhits(VK_SHIFT,KEY_LOCATION_LEFT)) || (JAVANVM_Kbhits(VK_SHIFT,KEY_LOCATION_RIGHT)))
+	if ((JAVA_Kbhits(VK_SHIFT,KEY_LOCATION_LEFT)) || (JAVA_Kbhits(VK_SHIFT,KEY_LOCATION_RIGHT)))
 		INPUT_key_shift = 1;
 	else
 		INPUT_key_shift = 0;
 
     /* CONTROL STATE */
-	if ((JAVANVM_Kbhits(VK_CONTROL,KEY_LOCATION_LEFT)) || (JAVANVM_Kbhits(VK_CONTROL,KEY_LOCATION_RIGHT)))
+	if ((JAVA_Kbhits(VK_CONTROL,KEY_LOCATION_LEFT)) || (JAVA_Kbhits(VK_CONTROL,KEY_LOCATION_RIGHT)))
 		key_control = 1;
 	else
 		key_control = 0;
@@ -203,11 +197,11 @@ int PLATFORM_Keyboard(void)
 
 	/* OPTION / SELECT / START keys */
 	INPUT_key_consol = INPUT_CONSOL_NONE;
-	if (JAVANVM_Kbhits(VK_F2,KEY_LOCATION_STANDARD))
+	if (JAVA_Kbhits(VK_F2,KEY_LOCATION_STANDARD))
 		INPUT_key_consol &= (~INPUT_CONSOL_OPTION);
-	if (JAVANVM_Kbhits(VK_F3,KEY_LOCATION_STANDARD))
+	if (JAVA_Kbhits(VK_F3,KEY_LOCATION_STANDARD))
 		INPUT_key_consol &= (~INPUT_CONSOL_SELECT);
-	if (JAVANVM_Kbhits(VK_F4,KEY_LOCATION_STANDARD))
+	if (JAVA_Kbhits(VK_F4,KEY_LOCATION_STANDARD))
 		INPUT_key_consol &= (~INPUT_CONSOL_START);
 
 	if (key_pressed == 0)
@@ -694,7 +688,7 @@ int JAVANVM_INPUT_Initialise(int *argc, char *argv[])
 
 static void do_platform_PORT(UBYTE *s0, UBYTE *s1)
 {
-#define KBHITS(x) (JAVANVM_Kbhits(x,x##_LOC))
+#define KBHITS(x) (JAVA_Kbhits(x,x##_LOC))
 	int stick0, stick1;
 	stick0 = stick1 = INPUT_STICK_CENTRE;
 

@@ -46,3 +46,8 @@ extern "C" void JAVA_DisplayScreen(unsigned int screen[], int size) {
 		nativeClientClass.callVoidMethod(nativeClient, "displayScreen", "([I)V", array);
 	}
 }
+
+extern "C" int JAVA_Kbhits(int key, int loc) {
+	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
+	return nativeClientClass.callIntMethod(nativeClient, "getKbhits", "(II)I", key, loc);
+}

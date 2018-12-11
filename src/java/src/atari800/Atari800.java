@@ -323,38 +323,8 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 			//Fill in the rest of the command line arguments
 			for(int i=0;i<args.length;i++) appArgs[i+1] = args[i];
 
-			//Make a Runtime instantiation
-			final Runtime rt;
-
-			String className = "atari800_runtime";
-			/*TO use the interpreter:*/
-			/*
-			if(className.endsWith(".mips")){
-				rt = new org.ibex.nestedvm.Interpreter(className);
-			} else {*/
-				Class c = Class.forName(className);
-				if(!Runtime.class.isAssignableFrom(c)) { 
-					System.err.println(className + " isn't a MIPS compiled class");
-					System.exit(1); 
-				}
-				rt = (Runtime) c.newInstance();
-			//}
-			rt.setCallJavaCB(new Runtime.CallJavaCB() {
-				public int call(int a, int b, int c, int d) {
-					switch(a) {
-						default:
-							return 0;
-					}
-				 }
-			});
-			if (isApplet) {
-			}
-			//Run the emulator:
-			if (!isApplet) {
-				System.exit(rt.run(appArgs));
-			} else {
-				rt.run(appArgs);
-			}
+			NativeInterface.init(this);
+			NativeInterface.main();
 		} catch(Exception e) {
 			System.err.println(e);
 		}

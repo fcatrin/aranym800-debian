@@ -9,11 +9,19 @@ extern "C" {
 #endif
 /*
  * Class:     atari800_NativeInterface
- * Method:    setNativeClient
+ * Method:    init
  * Signature: (Latari800/NativeClient;)V
  */
 JNIEXPORT void JNICALL Java_atari800_NativeInterface_init
   (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     atari800_NativeInterface
+ * Method:    main
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_atari800_NativeInterface_main
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }

@@ -2580,6 +2580,7 @@ if [ "$a8_target" = "java" ]; then
 fi
 
 
+
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -5512,7 +5513,58 @@ $as_echo "#define SUPPORTS_PLATFORM_PALETTEUPDATE 1" >>confdefs.h
 
 $as_echo "#define DIRTYRECT 1" >>confdefs.h
 
-        		;;
+        		  ;;
+	java)
+        as_ac_Lib=`$as_echo "ac_cv_lib_stdc++''_main" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lstdc++" >&5
+$as_echo_n "checking for main in -lstdc++... " >&6; }
+if eval \${$as_ac_Lib+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lstdc++  $LIBS"
+if test x$ac_no_link = xyes; then
+  as_fn_error $? "link tests are not allowed after AC_NO_EXECUTABLES" "$LINENO" 5
+fi
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  eval "$as_ac_Lib=yes"
+else
+  eval "$as_ac_Lib=no"
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+eval ac_res=\$$as_ac_Lib
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_LIBstdc++" | $as_tr_cpp` 1
+_ACEOF
+
+  LIBS="-lstdc++ $LIBS"
+
+else
+  as_fn_error $? "\"stdc++ library not found!\"" "$LINENO" 5
+fi
+
+
+$as_echo "#define DEFAULT_CFG_NAME \"atari800mon.cfg\"" >>confdefs.h
+
+        ;;
     windx)
 
 $as_echo "#define DIRECTX 1" >>confdefs.h

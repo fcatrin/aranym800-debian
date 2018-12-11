@@ -173,6 +173,7 @@ fi
 
 dnl Check for programs...
 
+
 AC_PROG_CC
 AC_PROG_INSTALL
 
@@ -351,7 +352,11 @@ dnl BeOS has a real issue with redundant-decls
         AC_DEFINE(SUPPORTS_PLATFORM_PALETTEUPDATE,1,[Update the Palette if it changed.])
         AC_DEFINE(DIRTYRECT,1,[Define to use dirty screen partial repaints.])
         dnl AC_DEFINE(NODIRTYCOMPARE,1,[Define to skip memory comparisons - Requires DIRTYRECT.])
-		;;
+		  ;;
+	java)
+        A8_NEED_LIB(stdc++)
+        AC_DEFINE(DEFAULT_CFG_NAME,"atari800mon.cfg",[Alternate config filename])
+        ;;
     windx)
         AC_DEFINE(DIRECTX,1,[Target: Windows with DirectX.])
         AC_DEFINE(SUPPORTS_PLATFORM_CONFIGURE,1,[Additional config file options.])

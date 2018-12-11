@@ -2,6 +2,7 @@
 #include "atari.h"
 #include "nativeclass.h"
 #include "java.h"
+#include "main.h"
 #include "atari800_NativeInterface.h"
 
 #define ATARI_800_NATIVE_CLIENT_CLASS "atari800/NativeClient"
@@ -15,6 +16,13 @@ JNIEXPORT void JNICALL Java_atari800_NativeInterface_init
 	vm = env;
 	nativeClient = client;
 	nativeClientClass = new NativeClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
+}
+
+char *args[] = {"atari800"};
+
+JNIEXPORT void JNICALL Java_atari800_NativeInterface_main
+  (JNIEnv *env, jclass _class) {
+	main(1, args);
 }
 
 static jintArray newIntArray(int src[], int size) {

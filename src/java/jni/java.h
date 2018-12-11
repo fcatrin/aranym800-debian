@@ -29,7 +29,6 @@
 extern int _call_java(int a, int b, int c, int d);
 
 enum {
-	JAVANVM_FUN_InitSound = 8,
 	JAVANVM_FUN_SoundExit = 9,
 	JAVANVM_FUN_SoundAvailable = 10,
 	JAVANVM_FUN_SoundWrite = 11,
@@ -45,15 +44,6 @@ enum {
 	JAVANVM_KeyEventKeyChar = 2,
 	JAVANVM_KeyEventKeyLocation = 3,
 	JAVANVM_KeyEventSIZE = 4
-};
-enum {
-	JAVANVM_InitSoundSampleRate = 0,
-	JAVANVM_InitSoundBitsPerSample = 1,
-	JAVANVM_InitSoundChannels = 2,
-	JAVANVM_InitSoundSigned = 3,
-	JAVANVM_InitSoundBigEndian = 4,
-	JAVANVM_InitSoundBufferSize = 5,
-	JAVANVM_InitSoundSIZE = 6
 };
 
 /* Java Keys */
@@ -272,6 +262,10 @@ void JAVA_InitGraphics(
 		int atari_width, int atari_height,
 		int atari_visible_width,
 		int atari_left_margin);
+int JAVA_InitSound(
+		int sampleRate, int bitsPerSample, int channels,
+		int isSigned, int bigEndian,
+		int bufferSize);
 
 #ifdef __cplusplus
 }

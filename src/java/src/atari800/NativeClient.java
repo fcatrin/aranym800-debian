@@ -12,4 +12,9 @@ public interface NativeClient {
 			int atari_width, int atari_height,
 			int atari_visible_width,
 			int atari_left_margin);
+	public int initSound(
+			int sampleRate, int bitsPerSample, int channels, 
+			boolean isSigned, boolean bigEndian, 
+			int bufferSize);	
+	
 }

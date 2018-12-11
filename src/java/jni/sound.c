@@ -29,11 +29,6 @@
 #include "javanvm/javanvm.h"
 
 /* These functions call the NestedVM runtime */
-static int JAVANVM_InitSound(void *config)
-{
-	return _call_java(JAVANVM_FUN_InitSound, (int)config, 0, 0);
-}
-
 static int JAVANVM_SoundExit(void)
 {
 	return _call_java(JAVANVM_FUN_SoundExit, 0, 0, 0);
@@ -61,20 +56,20 @@ static int JAVANVM_SoundContinue(void)
 
 int PLATFORM_SoundSetup(Sound_setup_t *setup)
 {
-	int sconfig[JAVANVM_InitSoundSIZE];
 	int hw_buffer_size;
 
 	if (setup->buffer_frames == 0)
 		/* Set buffer_frames automatically. */
 		setup->buffer_frames = Sound_NextPow2(setup->freq * 4 / 50);
 
-	sconfig[JAVANVM_InitSoundSampleRate] = setup->freq;
-	sconfig[JAVANVM_InitSoundBitsPerSample] = setup->sample_size * 8;
-	sconfig[JAVANVM_InitSoundChannels] = setup->channels;
-	sconfig[JAVANVM_InitSoundSigned] = setup->sample_size == 2;
-	sconfig[JAVANVM_InitSoundBigEndian] = TRUE;
-	sconfig[JAVANVM_InitSoundBufferSize] = setup->buffer_frames * setup->sample_size * setup->channels;
-	hw_buffer_size = JAVANVM_InitSound((void *)sconfig);
+	hw_buffer_size = JAVA_InitSound(
+			setup->freq,
+			setup->sample_size * 8,
+			setup->channels,
+			setup->sample_size == 2,
+			TRUE,
+			setup->buffer_frames * setup->sample_size * setup->channels
+			);
 	if (hw_buffer_size == 0)
 		return FALSE;
 	setup->buffer_frames = hw_buffer_size / setup->sample_size / setup->channels;

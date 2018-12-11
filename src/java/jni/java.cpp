@@ -85,5 +85,23 @@ extern "C" void JAVA_InitGraphics(
 		int atari_left_margin) {
 
 	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
-	nativeClientClass.callVoidMethod(nativeClient, "initGraphics", "(IIIIII)V");
+	nativeClientClass.callVoidMethod(nativeClient, "initGraphics", "(IIIIII)V",
+			scaleh, scalew,
+			atari_width, atari_height,
+			atari_visible_width,
+			atari_left_margin
+	);
 }
+
+extern "C" int JAVA_InitSound(
+		int sampleRate, int bitsPerSample, int channels,
+		int isSigned, int bigEndian,
+		int bufferSize) {
+	NativeClass nativeClientClass(vm, ATARI_800_NATIVE_CLIENT_CLASS);
+	return nativeClientClass.callIntMethod(nativeClient, "initSound", "(IIIZZI)I",
+			sampleRate, bitsPerSample, channels,
+			isSigned, bigEndian,
+			bufferSize
+	);
+}
+

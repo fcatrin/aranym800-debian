@@ -242,7 +242,8 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 		}
 	}
 
-	private void initSound(int sampleRate, int bitsPerSample, int channels, boolean isSigned, boolean bigEndian, int bufferSize){
+	@Override
+	public int initSound(int sampleRate, int bitsPerSample, int channels, boolean isSigned, boolean bigEndian, int bufferSize){
 		AudioFormat format = new AudioFormat(sampleRate, bitsPerSample, channels, isSigned, bigEndian);
 		DataLine.Info info = new DataLine.Info(SourceDataLine.class,format);
 
@@ -254,6 +255,7 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 		} catch(Exception e) {
 			System.err.println(e);
 		}
+		return line.getBufferSize();
 	}
 
 	//Applet init
@@ -338,30 +340,6 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 			rt.setCallJavaCB(new Runtime.CallJavaCB() {
 				public int call(int a, int b, int c, int d) {
 					switch(a) {
-						case 8:
-							/*static int JAVANVM_InitSound(void *config){
-								return _call_java(8, (int)config, 0, 0);
-							}*/
-							int sampleRate = 44100;
-							int bitsPerSample = 16;
-							int channels = 2;
-							boolean isSigned = true;
-							boolean bigEndian = true;
-							int bufferSize = 1024;
-							try {
-								sampleRate = rt.memRead(b+4*0);
-								bitsPerSample = rt.memRead(b+4*1);
-								channels = rt.memRead(b+4*2);
-								isSigned = (rt.memRead(b+4*3) != 0);
-								bigEndian = (rt.memRead(b+4*4) != 0);
-								bufferSize = rt.memRead(b+4*5);
-							} catch(Exception e) {
-								System.err.println(e);
-								return 0; // Indicate failure
-							}
-
-							initSound(sampleRate, bitsPerSample, channels, isSigned, bigEndian, bufferSize);
-							return line.getBufferSize();
 						case 9:
 							/*static int JAVANVM_SoundExit(void){
 								return _call_java(9, 0, 0, 0);

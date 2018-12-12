@@ -241,7 +241,7 @@ extern "C" {
 #endif
 
 void JAVA_InitPalette(int colors[], int size);
-void JAVA_DisplayScreen(unsigned int screen[], int size);
+void JAVA_DisplayScreen(UBYTE screen[], int size);
 int  JAVA_Kbhits(int key, int loc);
 int  JAVA_PollKeyEvent(int atari_event[]);
 int  JAVA_GetWindowClosed();

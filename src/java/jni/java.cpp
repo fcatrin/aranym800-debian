@@ -32,9 +32,9 @@ enum Methods {
 JavaObjectMethod methods[] = {
 		{ M_INIT_PALETTE, "initPalette", "([I)V" },
 		{ M_INIT_GRAPHICS, "initGraphics", "(IIIIII)V" },
-		{ M_DISPLAY_SCREEN, "displayScreen", "([I)V"},
+		{ M_DISPLAY_SCREEN, "displayScreen", "([B)V"},
 		{ M_GET_KB_HITS, "getKbhits", "(II)I"},
-		{ M_POLL_KEY_EVENT, "pollKeyEvent", "([I)I"},
+		{ M_POLL_KEY_EVENT, "pollKeyEvent", "()[I"},
 		{ M_GET_WINDOW_CLOSED, "getWindowClosed", "()Z"},
 		{ M_SLEEP, "sleep", "(J)V"},
 		{ M_INIT_SOUND, "initSound", "(IIIZZI)I"},
@@ -58,11 +58,12 @@ JNIEXPORT void JNICALL Java_atari800_NativeInterface_init
 	client->registerMethods(env, methods, N_METHODS);
 }
 
-char *args[] = {"atari800"};
+// char *args[] = {"atari800", "-nobasic", "-xl", "/tmp/atari/ninja.atr"};
+char *args[] = {"atari800", "-basic", "-basic_rom", "/tmp/atari/bios/ATARIBAS.ROM", "-xlxe_rom", "/tmp/atari/bios/ATARIXL.ROM"};
 
 JNIEXPORT void JNICALL Java_atari800_NativeInterface_main
   (JNIEnv *env, jclass _class) {
-	main(1, args);
+	main(6, args);
 }
 
 static jintArray newIntArray(JNIEnv *env, int src[], int size) {
@@ -106,13 +107,14 @@ extern "C" void JAVA_InitPalette(int colors[], int size) {
 	vm->DetachCurrentThread();
 }
 
-extern "C" void JAVA_DisplayScreen(unsigned int screen[], int size) {
+extern "C" void JAVA_DisplayScreen(UBYTE screen[], int size) {
 	JNIEnv *env;
 	vm->AttachCurrentThread((void **)&env, NULL);
 
-	jintArray array = newIntArray(env, (int *)screen, size);
+	jbyteArray array = newByteArray(env, screen, size);
 	if (array != NULL) {
 		client->callVoidMethod(env, M_DISPLAY_SCREEN, array);
+		env->DeleteLocalRef(array);
 	}
 	vm->DetachCurrentThread();
 }
@@ -132,20 +134,19 @@ extern "C" int JAVA_PollKeyEvent(int atari_event[]) {
 	JNIEnv *env;
 	vm->AttachCurrentThread((void **)&env, NULL);
 
-	int result = 0;
-
-	jintArray array = newIntArray(env, atari_event, 4);
-	if (array != NULL) {
-		result = client->callIntMethod(env, M_POLL_KEY_EVENT , atari_event);
-
-		jint *event = (jint *)env->GetIntArrayElements(array, NULL);
+	jintArray result = (jintArray)client->callObjectMethod(env, M_POLL_KEY_EVENT);
+	if (result) {
+		jint *event = (jint *)env->GetIntArrayElements(result, NULL);
 		for(int i=0; i<4; i++) {
 			atari_event[i] = event[i];
 		}
-		env->ReleaseIntArrayElements(array, event, 0 );
+		env->ReleaseIntArrayElements(result, event, 0 );
 	}
+
+	env->DeleteLocalRef(result);
+
 	vm->DetachCurrentThread();
-	return result;
+	return result != NULL;
 }
 
 extern "C" int JAVA_GetWindowClosed() {
@@ -197,6 +198,12 @@ extern "C" int JAVA_InitSound(
 	JNIEnv *env;
 	vm->AttachCurrentThread((void **)&env, NULL);
 
+	LOGV("JAVA_InitSound rate:%d, bits:%d, channels:%d, signed:%d, bigendian:%d, bufsize:%d\n",
+			sampleRate, bitsPerSample, channels,
+			isSigned, bigEndian,
+			bufferSize
+			);
+
 	int result = client->callIntMethod(env, M_INIT_SOUND,
 			sampleRate, bitsPerSample, channels,
 			isSigned, bigEndian,
@@ -231,6 +238,8 @@ extern "C" int JAVA_SoundWrite(UBYTE const buffer[], unsigned int len) {
 
 	jbyteArray samples = newByteArray(env, buffer, len);
 	int result = client->callIntMethod(env, M_SOUND_WRITE, samples, len);
+
+	env->DeleteLocalRef(samples);
 
 	vm->DetachCurrentThread();
 	return result;

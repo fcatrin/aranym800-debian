@@ -48,6 +48,7 @@ public:
 	jboolean callBooleanMethod(JNIEnv *env, int methodId, ...);
 	jint     callIntMethod    (JNIEnv *env, int methodId, ...);
 	void     callVoidMethod   (JNIEnv *env, int methodId, ...);
+	jobject  callObjectMethod(JNIEnv *env, int methodId, ...);
 
 	void registerMethods(JNIEnv *env, JavaObjectMethod methods[], int len);
 };

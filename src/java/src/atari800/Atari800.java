@@ -93,14 +93,15 @@ class AtariCanvas extends Canvas implements KeyListener {
 		image = createImage(mis);
 	}
 
-	public void displayScreen(int atari_screen[]){
+	public void displayScreen(byte atari_screen[]){
 		int ao = atari_left_margin;
 		int po = 0;
 		for(int h=0; h<240;h++){
 			try {
 				System.arraycopy(atari_screen, ao,pixels,po,width);
 			} catch(Exception e) {
-				System.err.println(e);
+				System.out.println("array size " + atari_screen.length);
+				e.printStackTrace();
 			}
 			ao += atari_width;
 			po += width;
@@ -155,10 +156,10 @@ class AtariCanvas extends Canvas implements KeyListener {
 		}
 	}
 
-	/* event points to an array of 4 values*/
-	int pollKeyEvent(int atari_event[]){
+	int atari_event[] = new int[4];
+	int[] pollKeyEvent(){
 		if (keyqueue.isEmpty()){
-			return 0;
+			return null;
 		}
 		KeyEvent event = (KeyEvent)keyqueue.firstElement();
 		keyqueue.removeElement(event);
@@ -166,6 +167,7 @@ class AtariCanvas extends Canvas implements KeyListener {
 		int key = event.getKeyCode();
 		char uni = event.getKeyChar();
 		int loc = event.getKeyLocation();
+		System.out.println("keypressed " + event.getKeyCode());
 		try{
 			/* write the data to the array pointed to by event*/
 			atari_event[0] = type;
@@ -175,7 +177,7 @@ class AtariCanvas extends Canvas implements KeyListener {
 		} catch(Exception e) {
 			System.err.println(e);
 		}
-		return 1;
+		return atari_event;
 	}
 
 	/* 1 if the Window was closed */
@@ -193,8 +195,6 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 	Thread thread;
 	private volatile boolean threadSuspended;
 
-	public static Atari800 instance; 
-	
 	//Applet constructor:
 	public Atari800() {
 		isApplet = true;
@@ -255,8 +255,15 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 			line.open(format, bufferSize);
 			soundBuffer = new byte[line.getBufferSize()];
 		} catch(Exception e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
+		try {
+			System.out.println(String.format("audio rate:%d, bits: %d, c:%d, signed:%s, end:%s, size:%s",
+					sampleRate, bitsPerSample, channels, (isSigned?"true":"false"), (bigEndian?"true":"false"), bufferSize));
+		} catch (Exception x) {
+			x.printStackTrace();
+		}
+
 		return line.getBufferSize();
 	}
 
@@ -326,7 +333,6 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 			for(int i=0;i<args.length;i++) appArgs[i+1] = args[i];
 
 			NativeInterface.init(this);
-			Atari800.instance = this;
 			NativeInterface.main();
 		} catch(Exception e) {
 			System.err.println(e);
@@ -339,7 +345,7 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 	}
 
 	@Override
-	public void displayScreen(int[] atari_screen) {
+	public void displayScreen(byte[] atari_screen) {
 		canvas.displayScreen(atari_screen);
 	}
 
@@ -349,8 +355,8 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 	}
 
 	@Override
-	public int pollKeyEvent(int[] atari_event) {
-		return canvas.pollKeyEvent(atari_event);
+	public int[] pollKeyEvent() {
+		return canvas.pollKeyEvent();
 	}
 
 	@Override
@@ -372,7 +378,8 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 
 	@Override
 	public int soundAvailable() {
-		return line.available();
+		int result = line.available();
+		return result;
 	}
 
 	@Override

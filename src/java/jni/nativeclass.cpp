@@ -187,3 +187,11 @@ void JavaObject::callVoidMethod(JNIEnv *env, int methodId, ...) {
 	OCALLOBJECTVOID();
 }
 
+jobject JavaObject::callObjectMethod(JNIEnv *env, int methodId, ...) {
+	jmethodID method = this->methods[methodId];
+	if (!method) return NULL;
+
+	OCALLOBJECT(jobject, CallObjectMethodV);
+}
+
+

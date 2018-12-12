@@ -16,6 +16,8 @@ public:
 
 	static void dumpObject(JNIEnv *env, const char *name, jobject object);
 
+	void     setEnv(JNIEnv *env);
+
 	jobject  create(const char *signature, ...);
 	jobject  callStaticObjectMethod(const char *methodName, const char *signature, ...);
 	jobject  callObjectMethod (jobject object, const char *methodName, const char *signature, ...);

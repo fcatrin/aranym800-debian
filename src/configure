@@ -734,6 +734,7 @@ enable_seriosound
 enable_clipsound
 enable_pbi_xld
 enable_voicebox
+enable_javatrace
 enable_ide
 enable_largefile
 enable_onscreenkeyboard
@@ -1429,6 +1430,7 @@ Optional Features:
   --enable-clipsound      Use sound clipping (default=OFF)
   --enable-pbi_xld        Emulate 1450XLD (default=ON)
   --enable-voicebox       Emulate the Alien Group Voice Box (default=ON)
+  --enable-javatrace      Trace Java calls (default=OFF)
   --enable-ide            Provide IDE emulation (default=ON)
   --disable-largefile     omit support for large files
   --enable-onscreenkeyboard
@@ -9081,6 +9083,20 @@ fi
 
 if [ "$a8_target" = "java" ]; then
    OBJS="$OBJS java/jni/java.o java/jni/nativeclass.o"
+
+    # Check whether --enable-javatrace was given.
+if test "${enable_javatrace+set}" = set; then :
+  enableval=$enable_javatrace; WANT_JAVA_TRACE=$enableval
+else
+  WANT_JAVA_TRACE=no
+fi
+
+    if [ "$WANT_JAVA_TRACE" = "yes" ]; then
+
+$as_echo "#define JAVA_TRACE 1" >>confdefs.h
+
+    fi
+
 fi
 
 

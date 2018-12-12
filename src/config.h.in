@@ -36,7 +36,7 @@
 /* Define to disable bitmap graphics emulation in CURSES target. */
 #undef CURSES_BASIC
 
-/* Alternate config filename due to 8+3 fs limit. */
+/* Alternate config filename */
 #undef DEFAULT_CFG_NAME
 
 /* Target: Windows with DirectX. */
@@ -337,6 +337,9 @@
 
 /* Define to allow sound interpolation. */
 #undef INTERPOLATE_SOUND
+
+/* Define to enable Java call traces. */
+#undef JAVA_TRACE
 
 /* Define to use LINUX joystick. */
 #undef LINUX_JOYSTICK

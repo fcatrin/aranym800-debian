@@ -2,37 +2,30 @@
 #include <string.h>
 #include <stdarg.h>
 #include <jni.h>
+#include "config.h"
+#include "trace.h"
 #include "nativeclass.h"
-
-#ifdef MT_TRACE
-	#ifdef __ANDROID__
-		#ifdef ALL_TRACE
-			#define LOGV(...) sprintf(trace_buffer, __VA_ARGS__); strcat(trace_log, trace_buffer); strcat(trace_log, "\n");
-		#else
-			#include <android/log.h>
-			#define LOGV(...)   __android_log_print((int)ANDROID_LOG_INFO, "NativeClass", __VA_ARGS__)
-		#endif
-	#else
-		#define LOGV(...)   printf(__VA_ARGS__)
-	#endif
-#else
-	#define LOGV(...)
-#endif
 
 #define CALLOBJECT(X, M) va_list args; va_start(args, signature); X o = this->env->M(object, method, args);               va_end(args); return o
 #define CALLOBJECTVOID() va_list args; va_start(args, signature);       this->env->CallVoidMethodV(object, method, args); va_end(args)
 #define CALLCLASS(X, M)  va_list args; va_start(args, signature); X o = this->env->M(this->javaClass, method, args);      va_end(args); return o
 
-
 NativeClass::NativeClass(JNIEnv *env, const char *className) {
 	this->env    = env;
-	this->javaClass = env->FindClass(className);
 	this->className = strdup(className);
+	this->javaClass = env->FindClass(className);
+	if (env->ExceptionCheck()) {
+		LOGV("class found %s", className);
+	}
 }
 
 NativeClass::~NativeClass() {
 	free(this->className);
 	env->DeleteLocalRef(this->javaClass);
+}
+
+void NativeClass::setEnv(JNIEnv *env) {
+	this->env = env;
 }
 
 jmethodID NativeClass::findStaticMethod(const char *methodName, const char *signature) {
@@ -85,7 +78,11 @@ jboolean NativeClass::callBooleanMethod(jobject object, const char *methodName, 
 
 jint NativeClass::callIntMethod(jobject object, const char *methodName, const char *signature, ...) {
 	jmethodID method = this->findMethod(methodName, signature);
-	if (!method) return 0;
+	if (!method) {
+		NativeClass::dumpObject(this->env, "caller of method", object);
+
+		return 0;
+	}
 
 	CALLOBJECT(jint, CallIntMethodV);
 }

@@ -193,6 +193,8 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 	Thread thread;
 	private volatile boolean threadSuspended;
 
+	public static Atari800 instance; 
+	
 	//Applet constructor:
 	public Atari800() {
 		isApplet = true;
@@ -324,6 +326,7 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 			for(int i=0;i<args.length;i++) appArgs[i+1] = args[i];
 
 			NativeInterface.init(this);
+			Atari800.instance = this;
 			NativeInterface.main();
 		} catch(Exception e) {
 			System.err.println(e);

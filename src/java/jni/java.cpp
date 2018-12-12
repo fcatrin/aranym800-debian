@@ -10,11 +10,28 @@
 
 JavaVM* vm = NULL;
 jobject nativeClient;
+JavaObject *client;
+
+enum Methods {
+	M_INIT_PALETTE,
+	M_INIT_GRAPHICS
+};
+
+JavaObjectMethod methods[] = {
+		{ M_INIT_PALETTE, "initPalette", "([I)V" },
+		{ M_INIT_GRAPHICS, "initGraphics", "(IIIIII)V" }
+};
+
+#define N_METHODS 2
+
 
 JNIEXPORT void JNICALL Java_atari800_NativeInterface_init
-  (JNIEnv *env, jclass _class, jobject client) {
+  (JNIEnv *env, jclass _class, jobject javaclient) {
 	env->GetJavaVM(&vm);
-	nativeClient = (jobject)env->NewGlobalRef(client);
+	nativeClient = (jobject)env->NewGlobalRef(javaclient);
+
+	client = new JavaObject(nativeClient);
+	client->registerMethods(env, methods, N_METHODS);
 }
 
 char *args[] = {"atari800"};
@@ -60,8 +77,7 @@ extern "C" void JAVA_InitPalette(int colors[], int size) {
 
 	jintArray array = newIntArray(env, colors, size);
 	if (array != NULL) {
-		NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-		nativeClientClass.callVoidMethod(nativeClient, "initPalette", "([I)V", array);
+		client->callVoidMethod(env, M_INIT_PALETTE, array);
 	}
 	vm->DetachCurrentThread();
 }
@@ -144,8 +160,7 @@ extern "C" void JAVA_InitGraphics(
 
 	NativeClass::dumpObject(env, "Atari800_2", nativeClient);
 
-	NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-	nativeClientClass.callVoidMethod(nativeClient, "initGraphics", "(IIIIII)V",
+	client->callVoidMethod(env, M_INIT_GRAPHICS,
 			scaleh, scalew,
 			atari_width, atari_height,
 			atari_visible_width,

@@ -14,15 +14,39 @@ JavaObject *client;
 
 enum Methods {
 	M_INIT_PALETTE,
-	M_INIT_GRAPHICS
+	M_INIT_GRAPHICS,
+	M_DISPLAY_SCREEN,
+	M_GET_KB_HITS,
+	M_POLL_KEY_EVENT,
+	M_GET_WINDOW_CLOSED,
+	M_SLEEP,
+	M_INIT_SOUND,
+	M_SOUND_EXIT,
+	M_SOUND_AVAILABLE,
+	M_SOUND_WRITE,
+	M_SOUND_PAUSE,
+	M_SOUND_CONTINUE,
+	M_CHECK_THREAD_STATUS
 };
 
 JavaObjectMethod methods[] = {
 		{ M_INIT_PALETTE, "initPalette", "([I)V" },
-		{ M_INIT_GRAPHICS, "initGraphics", "(IIIIII)V" }
+		{ M_INIT_GRAPHICS, "initGraphics", "(IIIIII)V" },
+		{ M_DISPLAY_SCREEN, "displayScreen", "([I)V"},
+		{ M_GET_KB_HITS, "getKbhits", "(II)I"},
+		{ M_POLL_KEY_EVENT, "pollKeyEvent", "([I)I"},
+		{ M_GET_WINDOW_CLOSED, "getWindowClosed", "()Z"},
+		{ M_SLEEP, "sleep", "(J)V"},
+		{ M_INIT_SOUND, "initSound", "(IIIZZI)I"},
+		{ M_SOUND_EXIT, "soundExit", "()V"},
+		{ M_SOUND_AVAILABLE, "soundAvailable", "()I"},
+		{ M_SOUND_WRITE, "soundWrite", "([BI)I"},
+		{ M_SOUND_PAUSE, "soundPause", "()V"},
+		{ M_SOUND_CONTINUE, "soundContinue", "()V"},
+		{ M_CHECK_THREAD_STATUS, "checkThreadStatus", "()I"}
 };
 
-#define N_METHODS 2
+#define N_METHODS 14
 
 
 JNIEXPORT void JNICALL Java_atari800_NativeInterface_init
@@ -88,8 +112,7 @@ extern "C" void JAVA_DisplayScreen(unsigned int screen[], int size) {
 
 	jintArray array = newIntArray(env, (int *)screen, size);
 	if (array != NULL) {
-		NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-		nativeClientClass.callVoidMethod(nativeClient, "displayScreen", "([I)V", array);
+		client->callVoidMethod(env, M_DISPLAY_SCREEN, array);
 	}
 	vm->DetachCurrentThread();
 }
@@ -98,8 +121,7 @@ extern "C" int JAVA_Kbhits(int key, int loc) {
 	JNIEnv *env;
 	vm->AttachCurrentThread((void **)&env, NULL);
 
-	NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-	int result = nativeClientClass.callIntMethod(nativeClient, "getKbhits", "(II)I", key, loc);
+	int result = client->callIntMethod(env, M_GET_KB_HITS, key, loc);
 
 	vm->DetachCurrentThread();
 
@@ -114,8 +136,7 @@ extern "C" int JAVA_PollKeyEvent(int atari_event[]) {
 
 	jintArray array = newIntArray(env, atari_event, 4);
 	if (array != NULL) {
-		NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-		result = nativeClientClass.callIntMethod(nativeClient, "pollKeyEvent", "([I)I", atari_event);
+		result = client->callIntMethod(env, M_POLL_KEY_EVENT , atari_event);
 
 		jint *event = (jint *)env->GetIntArrayElements(array, NULL);
 		for(int i=0; i<4; i++) {
@@ -131,8 +152,7 @@ extern "C" int JAVA_GetWindowClosed() {
 	JNIEnv *env;
 	vm->AttachCurrentThread((void **)&env, NULL);
 
-	NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-	int result = nativeClientClass.callBooleanMethod(nativeClient, "getWindowClosed", "()Z");
+	int result = client->callBooleanMethod(env, M_GET_WINDOW_CLOSED);
 
 	vm->DetachCurrentThread();
 	return result;
@@ -142,8 +162,7 @@ extern "C" void JAVA_Sleep(long msec) {
 	JNIEnv *env;
 	vm->AttachCurrentThread((void **)&env, NULL);
 
-	NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-	nativeClientClass.callVoidMethod(nativeClient, "sleep", "(J)V");
+	client->callVoidMethod(env, M_SLEEP, msec);
 
 	vm->DetachCurrentThread();
 }
@@ -178,8 +197,7 @@ extern "C" int JAVA_InitSound(
 	JNIEnv *env;
 	vm->AttachCurrentThread((void **)&env, NULL);
 
-	NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-	int result = nativeClientClass.callIntMethod(nativeClient, "initSound", "(IIIZZI)I",
+	int result = client->callIntMethod(env, M_INIT_SOUND,
 			sampleRate, bitsPerSample, channels,
 			isSigned, bigEndian,
 			bufferSize
@@ -192,8 +210,7 @@ extern "C" void JAVA_SoundExit() {
 	JNIEnv *env;
 	vm->AttachCurrentThread((void **)&env, NULL);
 
-	NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-	nativeClientClass.callVoidMethod(nativeClient, "soundExit", "()V");
+	client->callVoidMethod(env, M_SOUND_EXIT);
 
 	vm->DetachCurrentThread();
 }
@@ -202,8 +219,7 @@ extern "C" int JAVA_SoundAvailable() {
 	JNIEnv *env;
 	vm->AttachCurrentThread((void **)&env, NULL);
 
-	NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-	int result = nativeClientClass.callIntMethod(nativeClient, "soundAvailable", "()I");
+	int result = client->callIntMethod(env, M_SOUND_AVAILABLE);
 
 	vm->DetachCurrentThread();
 	return result;
@@ -214,8 +230,7 @@ extern "C" int JAVA_SoundWrite(UBYTE const buffer[], unsigned int len) {
 	vm->AttachCurrentThread((void **)&env, NULL);
 
 	jbyteArray samples = newByteArray(env, buffer, len);
-	NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-	int result = nativeClientClass.callIntMethod(nativeClient, "soudWrite", "([BI)I", samples, len);
+	int result = client->callIntMethod(env, M_SOUND_WRITE, samples, len);
 
 	vm->DetachCurrentThread();
 	return result;
@@ -225,8 +240,7 @@ extern "C" void JAVA_SoundPause() {
 	JNIEnv *env;
 	vm->AttachCurrentThread((void **)&env, NULL);
 
-	NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-	nativeClientClass.callVoidMethod(nativeClient, "soundPause", "()V");
+	client->callVoidMethod(env, M_SOUND_PAUSE);
 
 	vm->DetachCurrentThread();
 }
@@ -235,8 +249,7 @@ extern "C" void JAVA_SoundContinue() {
 	JNIEnv *env;
 	vm->AttachCurrentThread((void **)&env, NULL);
 
-	NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-	nativeClientClass.callVoidMethod(nativeClient, "soundContinue", "()V");
+	client->callVoidMethod(env, M_SOUND_CONTINUE);
 
 	vm->DetachCurrentThread();
 }
@@ -245,8 +258,7 @@ extern "C" int JAVA_CheckThreadStatus() {
 	JNIEnv *env;
 	vm->AttachCurrentThread((void **)&env, NULL);
 
-	NativeClass nativeClientClass = NativeClass(env, ATARI_800_NATIVE_CLIENT_CLASS);
-	int result = nativeClientClass.callIntMethod(nativeClient, "checkThreadStatus", "()V");
+	int result = client->callIntMethod(env, M_CHECK_THREAD_STATUS);
 
 	vm->DetachCurrentThread();
 	return result;

@@ -152,7 +152,7 @@ jmethodID JavaObject::findMethod(JNIEnv *env, jclass _class, const char *methodN
 		LOGV("method not found %s %s", methodName, signature);
 		return 0;
 	}
-	LOGV("call method %s %s",methodName, signature);
+	LOGV("findMethod method %s %s",methodName, signature);
 	return methodId;
 }
 
@@ -174,8 +174,6 @@ jboolean JavaObject::callBooleanMethod(JNIEnv *env,int methodId, ...) {
 jint JavaObject::callIntMethod(JNIEnv *env, int methodId, ...) {
 	jmethodID method = this->methods[methodId];
 	if (!method) {
-		NativeClass::dumpObject(env, "caller of method", object);
-
 		return 0;
 	}
 

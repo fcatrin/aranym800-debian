@@ -58,12 +58,25 @@ JNIEXPORT void JNICALL Java_atari800_NativeInterface_init
 	client->registerMethods(env, methods, N_METHODS);
 }
 
-// char *args[] = {"atari800", "-nobasic", "-xl", "/tmp/atari/ninja.atr"};
-char *args[] = {"atari800", "-basic", "-basic_rom", "/tmp/atari/bios/ATARIBAS.ROM", "-xlxe_rom", "/tmp/atari/bios/ATARIXL.ROM"};
-
 JNIEXPORT void JNICALL Java_atari800_NativeInterface_main
-  (JNIEnv *env, jclass _class) {
-	main(6, args);
+  (JNIEnv *env, jclass _class, jobjectArray args) {
+
+	int argc = env->GetArrayLength(args);
+
+	char *argv[argc];
+
+	for (int i=0; i<argc; i++) {
+		jstring string = (jstring) (env->GetObjectArrayElement(args, i));
+		argv[i] = (char *)env->GetStringUTFChars(string, 0);
+	}
+
+	main(argc, argv);
+
+	for (int i=0; i<argc; i++) {
+		jstring string = (jstring) (env->GetObjectArrayElement(args, i));
+		env->ReleaseStringUTFChars(string, argv[i]);
+	}
+
 }
 
 static jintArray newIntArray(JNIEnv *env, int src[], int size) {

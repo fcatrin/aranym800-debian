@@ -212,9 +212,13 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 		canvas.setFocusable(true);
 		if (!isApplet) {
 			frame.addWindowListener(new WindowAdapter() {
-				public void windowsGainedFocus(WindowEvent e) {
+				
+				@Override
+				public void windowGainedFocus(WindowEvent e) {
 					canvas.requestFocusInWindow();
 				}
+
+				@Override
 				public void windowClosing(WindowEvent e) {
 					canvas.setWindowClosed();
 				}
@@ -316,7 +320,7 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 			for(int i=0;i<args.length;i++) appArgs[i+1] = args[i];
 
 			NativeInterface.init(this);
-			NativeInterface.main();
+			NativeInterface.main(appArgs);
 		} catch(Exception e) {
 			System.err.println(e);
 		}

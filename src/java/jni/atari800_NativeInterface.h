@@ -18,10 +18,10 @@ JNIEXPORT void JNICALL Java_atari800_NativeInterface_init
 /*
  * Class:     atari800_NativeInterface
  * Method:    main
- * Signature: ()V
+ * Signature: ([Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_atari800_NativeInterface_main
-  (JNIEnv *, jclass);
+  (JNIEnv *, jclass, jobjectArray);
 
 #ifdef __cplusplus
 }

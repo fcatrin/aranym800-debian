@@ -1,0 +1,1 @@
+This directory will contain the emulator built as a native library

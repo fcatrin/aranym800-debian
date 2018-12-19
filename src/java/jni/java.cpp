@@ -26,7 +26,7 @@
 #include <jni.h>
 #include "atari.h"
 #include "trace.h"
-#include "nativeclass.h"
+#include "nativeobject.h"
 #include "java.h"
 #include "main.h"
 #include "atari800_NativeInterface.h"
@@ -211,10 +211,7 @@ extern "C" void JAVA_InitGraphics(
 		int atari_left_margin) {
 
 	JNIEnv *env;
-	LOGV("JAVA_InitGraphics start");
 	vm->AttachCurrentThread((void **)&env, NULL);
-
-	NativeClass::dumpObject(env, "Atari800_2", nativeClient);
 
 	client->callVoidMethod(env, M_INIT_GRAPHICS,
 			scaleh, scalew,
@@ -223,7 +220,6 @@ extern "C" void JAVA_InitGraphics(
 			atari_left_margin
 	);
 	vm->DetachCurrentThread();
-	LOGV("JAVA_InitGraphics done");
 }
 
 extern "C" int JAVA_InitSound(
@@ -233,12 +229,6 @@ extern "C" int JAVA_InitSound(
 
 	JNIEnv *env;
 	vm->AttachCurrentThread((void **)&env, NULL);
-
-	LOGV("JAVA_InitSound rate:%d, bits:%d, channels:%d, signed:%d, bigendian:%d, bufsize:%d\n",
-			sampleRate, bitsPerSample, channels,
-			isSigned, bigEndian,
-			bufferSize
-			);
 
 	int result = client->callIntMethod(env, M_INIT_SOUND,
 			sampleRate, bitsPerSample, channels,

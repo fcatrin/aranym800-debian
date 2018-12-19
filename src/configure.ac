@@ -1038,7 +1038,7 @@ else
 fi
 
 if [[ "$a8_target" = "java" ]]; then
-   OBJS="$OBJS java/jni/java.o java/jni/nativeclass.o"
+   OBJS="$OBJS java/jni/java.o java/jni/nativeobject.o"
    A8_OPTION(javatrace,no,
          [Trace Java calls (default=OFF)],
          JAVA_TRACE,[Define to enable Java call traces.]

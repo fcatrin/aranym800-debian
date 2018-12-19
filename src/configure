@@ -9082,7 +9082,7 @@ else
 fi
 
 if [ "$a8_target" = "java" ]; then
-   OBJS="$OBJS java/jni/java.o java/jni/nativeclass.o"
+   OBJS="$OBJS java/jni/java.o java/jni/nativeobject.o"
 
     # Check whether --enable-javatrace was given.
 if test "${enable_javatrace+set}" = set; then :

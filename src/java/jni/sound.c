@@ -36,12 +36,10 @@ int PLATFORM_SoundSetup(Sound_setup_t *setup)
 {
 	int hw_buffer_size;
 
-	printf("PLATFORM_SoundSetup 1\n");
 	if (setup->buffer_frames == 0)
 		/* Set buffer_frames automatically. */
 		setup->buffer_frames = Sound_NextPow2(setup->freq * 4 / 50);
 
-	printf("PLATFORM_SoundSetup 2\n");
 	hw_buffer_size = JAVA_InitSound(
 			setup->freq,
 			setup->sample_size * 8,

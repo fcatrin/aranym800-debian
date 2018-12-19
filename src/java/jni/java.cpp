@@ -33,7 +33,7 @@ JavaObjectMethod methods[] = {
 		{ M_INIT_PALETTE, "initPalette", "([I)V" },
 		{ M_INIT_GRAPHICS, "initGraphics", "(IIIIII)V" },
 		{ M_DISPLAY_SCREEN, "displayScreen", "([B)V"},
-		{ M_GET_KB_HITS, "getKbhits", "(II)I"},
+		{ M_GET_KB_HITS, "getKbHits", "(II)I"},
 		{ M_POLL_KEY_EVENT, "pollKeyEvent", "()[I"},
 		{ M_GET_WINDOW_CLOSED, "getWindowClosed", "()Z"},
 		{ M_SLEEP, "sleep", "(J)V"},

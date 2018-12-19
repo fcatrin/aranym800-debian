@@ -4,7 +4,7 @@ public interface NativeClient {
 	public void initPalette(int colors[]);
 	public void displayScreen(byte atari_screen[]);
 
-	public int   getKbhits(int key, int loc);
+	public int   getKbHits(int key, int loc);
 	public int[] pollKeyEvent();
 	
 	public boolean getWindowClosed();

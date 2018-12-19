@@ -1,9 +1,10 @@
 package atari800;
 /*
- * atari800.java - Java NestedVM port of atari800
+ * Atari800.java - Java port of atari800
  *
  * Copyright (C) 2007-2008 Perry McFarlane
  * Copyright (C) 1998-2013 Atari800 development team (see DOC/CREDITS)
+ * Copyright (C) 2018      Franco Catrin
  *
  * This file is part of the Atari800 emulator project which emulates
  * the Atari 400, 800, 800XL, 130XE, and 5200 8-bit computers.
@@ -22,14 +23,33 @@ package atari800;
  * along with Atari800; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
-import java.util.*;
-import javax.sound.sampled.*;
-import java.applet.*;
+
+import java.applet.Applet;
+import java.awt.Canvas;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.IndexColorModel;
+import java.awt.image.MemoryImageSource;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.SourceDataLine;
 
 class AtariCanvas extends Canvas implements KeyListener {
+	private static final long serialVersionUID = 1L;
+	
 	byte pixels[];
 	MemoryImageSource mis;
 	IndexColorModel icm;
@@ -44,8 +64,10 @@ class AtariCanvas extends Canvas implements KeyListener {
 	int scaleh;
 	int size;
 	boolean windowClosed = false;
-	Vector keyqueue;
-	Hashtable kbhits;
+	
+	List<KeyEvent> keyQueue = new ArrayList<KeyEvent>();
+	Set<String> kbHits = new HashSet<String>();
+	
 	byte[][] paletteTable;
 	byte[] temp;
 
@@ -66,22 +88,16 @@ class AtariCanvas extends Canvas implements KeyListener {
 		for(int i=0;i<size;i++){
 			pixels[i]=0;
 		}
-		keyqueue = new Vector();
 		addKeyListener(this);
-		kbhits = new Hashtable();
 	}
 
 	/* Init the palette*/
 	/* colortable is a runtime memory pointer*/
 	public void initPalette(int colors[]){
 		paletteTable = new byte[3][256];
-		int entry=0;
+
 		for(int i=0; i<256; i++){
-			try {
-				entry = colors[i];
-			} catch(Exception e) {
-				System.err.println(e);
-			}
+			int entry = colors[i];
 			paletteTable[0][i]=(byte)((entry>>>16)&0xff);
 			paletteTable[1][i]=(byte)((entry>>>8)&0xff);
 			paletteTable[2][i]=(byte)(entry&0xff);
@@ -97,12 +113,7 @@ class AtariCanvas extends Canvas implements KeyListener {
 		int ao = atari_left_margin;
 		int po = 0;
 		for(int h=0; h<240;h++){
-			try {
-				System.arraycopy(atari_screen, ao,pixels,po,width);
-			} catch(Exception e) {
-				System.out.println("array size " + atari_screen.length);
-				e.printStackTrace();
-			}
+			System.arraycopy(atari_screen, ao,pixels,po,width);
 			ao += atari_width;
 			po += width;
 		}
@@ -117,66 +128,52 @@ class AtariCanvas extends Canvas implements KeyListener {
 
 	// KeyListener methods:
 
+	private String buildCode(int key, int loc) {
+		return String.format("%d.%d", key, loc);
+	}
+	
 	public void keyPressed(KeyEvent event) {
-		char chr = event.getKeyChar();
+		keyQueue.add(event);
+		
 		int key = event.getKeyCode();
 		int loc = event.getKeyLocation();
-		keyqueue.addElement(event);
-		Integer[] val = new Integer[2];
-		val[0] = new Integer(key);
-		val[1] = new Integer(loc);
-		kbhits.put(Arrays.asList(val), new Boolean(true));
-		//System.err.println("keyPressed: "+key+" location: "+loc);
+		kbHits.add(buildCode(key, loc));
 	}
 
 	public void keyReleased(KeyEvent event) {
-		char chr = event.getKeyChar();
+		keyQueue.add(event);
+
 		int key = event.getKeyCode();
 		int loc = event.getKeyLocation();
-		keyqueue.addElement(event);
-		Integer[] val = new Integer[2];
-		val[0] = new Integer(key);
-		val[1] = new Integer(loc);
-		kbhits.remove(Arrays.asList(val));
+		kbHits.remove(buildCode(key, loc));
 	}
 
-	public void keyTyped(KeyEvent event) {
-	}
+	public void keyTyped(KeyEvent event) {}
 
 	/* get a keyboard key state */
-	int getKbhits(int key, int loc){
-		Integer[] val = new Integer[2];
-		val[0] = new Integer(key);
-		val[1] = new Integer(loc);
-		if  (kbhits.get(Arrays.asList(val)) != null ){
-			return 1;
-		}
-		else{ 
-			return 0;
-		}
+	boolean getKbHits(int key, int loc){
+		return kbHits.contains(buildCode(key, loc));
 	}
 
 	int atari_event[] = new int[4];
+	
 	int[] pollKeyEvent(){
-		if (keyqueue.isEmpty()){
+		if (keyQueue.isEmpty()){
 			return null;
 		}
-		KeyEvent event = (KeyEvent)keyqueue.firstElement();
-		keyqueue.removeElement(event);
+		KeyEvent event = (KeyEvent)keyQueue.get(0);
+		keyQueue.remove(0);
+
 		int type = event.getID();
-		int key = event.getKeyCode();
+		int key  = event.getKeyCode();
 		char uni = event.getKeyChar();
-		int loc = event.getKeyLocation();
-		System.out.println("keypressed " + event.getKeyCode());
-		try{
-			/* write the data to the array pointed to by event*/
-			atari_event[0] = type;
-			atari_event[1] = key;
-			atari_event[2] = (int)uni;
-			atari_event[3] = loc;
-		} catch(Exception e) {
-			System.err.println(e);
-		}
+		int loc  = event.getKeyLocation();
+		
+		atari_event[0] = type;
+		atari_event[1] = key;
+		atari_event[2] = (int)uni;
+		atari_event[3] = loc;
+		
 		return atari_event;
 	}
 
@@ -350,8 +347,8 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 	}
 
 	@Override
-	public int getKbhits(int key, int loc) {
-		return canvas.getKbhits(key, loc);
+	public int getKbHits(int key, int loc) {
+		return canvas.getKbHits(key, loc) ? 1 : 0;
 	}
 
 	@Override

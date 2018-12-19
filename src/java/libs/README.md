@@ -18,15 +18,15 @@ ready to be used as a native library from Java.
 
 ## Building the example app
 
-In `java/src` you will find the followinf classes:
+In `java/src` you will find the following classes:
 
-- Atari800 : Sample application
-- NativeClient : The interface that the java app (client) must implement
+- Atari800 and AtariCanvas : Sample application
+- NativeClient    : The interface that the java app (client) must implement
 - NativeInterface : The interface that the java app must call
 
 ## Running the sample app
 
-java -cp bin -Djava.library.path=libs atari800.Atari800
-java -cp bin -Djava.library.path=libs atari800.Atari800 /tmp/atari/ninja.atr
-java -cp bin -Djava.library.path=libs atari800.Atari800 /tmp/prince.xex -nobasic
+java -cp bin -Djava.library.path=libs sample.Atari800
+java -cp bin -Djava.library.path=libs sample.Atari800 /tmp/atari/ninja.atr
+java -cp bin -Djava.library.path=libs sample.Atari800 /tmp/prince.xex -nobasic
 

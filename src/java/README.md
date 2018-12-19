@@ -1,19 +1,19 @@
 # Java port of Atari800
 
-This port is basically a library to include the Atari 800
-emulaor in your own Java project. In "src" you will find a working 
-Java app to test your build.
+This port builds a library to include the Atari 800
+emulator in your own Java project. In `src` you will find a working 
+example Java app to test your build.
 
 ## Building the native code
 
-Go to the main `atari800/src` directory of atari800 an run
+Go to the main `atari800/src` directory and run
 
 ```
 ./configure --target=java
 make
 ```
 
-This will create the file `libs/libatari800.so` which is the emulator
+This will create the file `java/libs/libatari800.so` which is the emulator
 ready to be used as a native library from Java.
 
 ## Building the example app
@@ -26,7 +26,11 @@ In `java/src` you will find the following classes:
 
 ## Running the sample app
 
+Here are some examples considering that `bin` contains your compiled classes 
+and `libs` contains the build library `libatari800.so`
+
+```
 java -cp bin -Djava.library.path=libs sample.Atari800
 java -cp bin -Djava.library.path=libs sample.Atari800 /tmp/atari/ninja.atr
 java -cp bin -Djava.library.path=libs sample.Atari800 /tmp/prince.xex -nobasic
-
+```

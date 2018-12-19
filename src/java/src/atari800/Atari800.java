@@ -54,22 +54,21 @@ class AtariCanvas extends Canvas implements KeyListener {
 	MemoryImageSource mis;
 	IndexColorModel icm;
 	Image image;
-	int atari_width;
-	int atari_height;
-	int atari_visible_width;
-	int atari_left_margin;
+	
+	int atariWidth;
+	int atariLeftMargin;
+	
 	int width;
 	int height;
 	int scalew;
 	int scaleh;
-	int size;
+
 	boolean windowClosed = false;
 	
 	List<KeyEvent> keyQueue = new ArrayList<KeyEvent>();
 	Set<String> kbHits = new HashSet<String>();
 	
 	byte[][] paletteTable;
-	byte[] temp;
 
 	public void paint(Graphics g) {
 		update(g);
@@ -79,20 +78,21 @@ class AtariCanvas extends Canvas implements KeyListener {
 		g.drawImage(image,0,0,width*scalew,height*scaleh,null);
 	}
 
-	public void init(){
-		width = atari_visible_width;
-		temp = new byte[width];
-		height = atari_height;
-		size = width*height;
+	public AtariCanvas(int atariWidth, int atariHeight, int atariVisibleWidth, int atariLeftMargin) {
+		
+		this.atariWidth      = atariWidth;
+		this.atariLeftMargin = atariLeftMargin;
+		
+		width = atariVisibleWidth;
+		height = atariHeight;
+		
+		int size = width*height;
 		pixels = new byte[size];
-		for(int i=0;i<size;i++){
-			pixels[i]=0;
-		}
+
 		addKeyListener(this);
 	}
 
 	/* Init the palette*/
-	/* colortable is a runtime memory pointer*/
 	public void initPalette(int colors[]){
 		paletteTable = new byte[3][256];
 
@@ -102,19 +102,19 @@ class AtariCanvas extends Canvas implements KeyListener {
 			paletteTable[1][i]=(byte)((entry>>>8)&0xff);
 			paletteTable[2][i]=(byte)(entry&0xff);
 		}
-		icm = new IndexColorModel(8,256,paletteTable[0],paletteTable[1],paletteTable[2]);
-		mis = new MemoryImageSource(width,height,icm,pixels,0,width);
+		icm = new IndexColorModel(8, 256, paletteTable[0], paletteTable[1], paletteTable[2]);
+		mis = new MemoryImageSource(width, height, icm, pixels, 0, width);
 		mis.setAnimated(true);
 		mis.setFullBufferUpdates(true);
 		image = createImage(mis);
 	}
 
 	public void displayScreen(byte atari_screen[]){
-		int ao = atari_left_margin;
+		int ao = atariLeftMargin;
 		int po = 0;
-		for(int h=0; h<240;h++){
-			System.arraycopy(atari_screen, ao,pixels,po,width);
-			ao += atari_width;
+		for(int h = 0; h < height; h++){
+			System.arraycopy(atari_screen, ao, pixels, po, width);
+			ao += atariWidth;
 			po += width;
 		}
 		mis.newPixels();
@@ -184,6 +184,8 @@ class AtariCanvas extends Canvas implements KeyListener {
 }
 
 public class Atari800 extends Applet implements Runnable, NativeClient {
+	private static final long serialVersionUID = 1L;
+	
 	AtariCanvas canvas;
 	Frame frame;
 	SourceDataLine line;
@@ -204,13 +206,8 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 	}
 
 	@Override
-	public void initGraphics(int scalew, int scaleh, int atari_width, int atari_height, int atari_visible_width, int atari_left_margin){
-		canvas = new AtariCanvas();
-		canvas.atari_width = atari_width;
-		canvas.atari_height = atari_height;
-		canvas.atari_visible_width = atari_visible_width;
-		canvas.atari_left_margin = atari_left_margin;
-		canvas.init();
+	public void initGraphics(int scalew, int scaleh, int width, int height, int visibleWidth, int leftMargin){
+		canvas = new AtariCanvas(width, height, visibleWidth, leftMargin);
 		canvas.setFocusTraversalKeysEnabled(false); //allow Tab key to work
 		canvas.setFocusable(true);
 		if (!isApplet) {
@@ -230,11 +227,11 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 		if (isApplet) {
 			this.add(canvas);
 			canvas.requestFocus();
-		}
-		else {
+		} else {
 			frame.add(canvas);
 			frame.setResizable(false);
 			frame.pack();
+			
 			Insets insets = frame.getInsets();
 			frame.setSize(new Dimension(canvas.width*scalew+insets.left+insets.right, canvas.height*scaleh+insets.top+insets.bottom));
 			frame.setVisible(true);
@@ -254,25 +251,17 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		try {
-			System.out.println(String.format("audio rate:%d, bits: %d, c:%d, signed:%s, end:%s, size:%s",
-					sampleRate, bitsPerSample, channels, (isSigned?"true":"false"), (bigEndian?"true":"false"), bufferSize));
-		} catch (Exception x) {
-			x.printStackTrace();
-		}
 
 		return line.getBufferSize();
 	}
 
 	//Applet init
 	public void init() {
-		//System.out.println("init()");
 		setLayout(null);
 	}
 
 	//Applet start
 	public synchronized void start() {
-		//System.out.println("start()");
 		if (thread == null) {
 			thread = new Thread(this);
 			thread.start();
@@ -283,15 +272,14 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 
 	//Applet stop
 	public synchronized void stop() {
-		//System.out.println("stop()");
 		threadSuspended = true;
 	}
 
 	//Applet destroy
 	public void destroy() {
-		//System.out.println("destroy()");
 		if (line!=null) line.close();
 		if (canvas!=null) this.remove(canvas);
+		
 		Thread dead = thread;
 		thread = null;
 		dead.interrupt();
@@ -299,13 +287,11 @@ public class Atari800 extends Applet implements Runnable, NativeClient {
 
 	//Applet run thread
 	public void run() {
-		//System.out.println("run()");
 		String args = getParameter("args");
 		this.main2(args.split("\\s"));
 	}
 
 	public void paint(Graphics g) {
-		//System.out.println("paint");
 		if (canvas!=null) canvas.paint(g);
 	}
 

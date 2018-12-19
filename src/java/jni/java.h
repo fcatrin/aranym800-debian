@@ -1,9 +1,10 @@
 /*
- * javanvm/javanvm.h - NestedVM-specific port code - C<->Java interface
+ * java/java.h - Java specific port code - C<->Java interface
  *
  * Copyright (c) 2001-2002 Jacek Poplawski (original atari_sdl.c)
  * Copyright (c) 2007-2008 Perry McFarlane (javanvm port)
  * Copyright (C) 2001-2013 Atari800 development team (see DOC/CREDITS)
+ * Copyright (c) 2018      Franco Catrin (java port)
  *
  * This file is part of the Atari800 emulator project which emulates
  * the Atari 400, 800, 800XL, 130XE, and 5200 8-bit computers.
@@ -23,16 +24,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef JAVANVM_H_
-#define JAVANVM_H_
+#ifndef JAVA_H_
+#define JAVA_H_
 
 /* These constants are for use with arrays passed to and from the NestedVM runtime */
 enum {
-	JAVANVM_KeyEventType = 0,
-	JAVANVM_KeyEventKeyCode = 1,
-	JAVANVM_KeyEventKeyChar = 2,
-	JAVANVM_KeyEventKeyLocation = 3,
-	JAVANVM_KeyEventSIZE = 4
+	JAVA_KeyEventType = 0,
+	JAVA_KeyEventKeyCode = 1,
+	JAVA_KeyEventKeyChar = 2,
+	JAVA_KeyEventKeyLocation = 3,
+	JAVA_KeyEventSIZE = 4
 };
 
 /* Java Keys */
@@ -268,4 +269,4 @@ int JAVA_CheckThreadStatus();
 }
 #endif
 
-#endif /* JAVANVM_H_ */
+#endif /* JAVA_H_ */

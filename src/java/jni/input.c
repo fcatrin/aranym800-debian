@@ -1,9 +1,10 @@
 /*
- * javanvm/input.c - NestedVM-specific port code - input device support
+ * jni/input.c - Java specific port code - input device support
  *
  * Copyright (c) 2001-2002 Jacek Poplawski (original atari_sdl.c)
  * Copyright (c) 2007-2008 Perry McFarlane (javanvm port)
  * Copyright (C) 2001-2008 Atari800 development team (see DOC/CREDITS)
+ * Copyright (c) 2018      Franco Catrin (java port)
  *
  * This file is part of the Atari800 emulator project which emulates
  * the Atari 400, 800, 800XL, 130XE, and 5200 8-bit computers.
@@ -84,7 +85,7 @@ int PLATFORM_Keyboard(void)
  	static int lastuni = 0;
 	static int lastloc = KEY_LOCATION_UNKNOWN;
 	int shiftctrl = 0;
-    int event[JAVANVM_KeyEventSIZE];
+    int event[JAVA_KeyEventSIZE];
 
 	/* Exit if the user closed the window */
 	if (JAVA_GetWindowClosed()) {
@@ -92,15 +93,15 @@ int PLATFORM_Keyboard(void)
 	}
 
 	if (JAVA_PollKeyEvent(event)) {
-		switch (event[JAVANVM_KeyEventType]) {
+		switch (event[JAVA_KeyEventType]) {
 		case KEY_PRESSED:
-			lastkey = event[JAVANVM_KeyEventKeyCode];
-			lastuni = event[JAVANVM_KeyEventKeyChar];
-			lastloc = event[JAVANVM_KeyEventKeyLocation];
+			lastkey = event[JAVA_KeyEventKeyCode];
+			lastuni = event[JAVA_KeyEventKeyChar];
+			lastloc = event[JAVA_KeyEventKeyLocation];
 			key_pressed = 1;
 			break;
 		case KEY_RELEASED:
-			lastkey = event[JAVANVM_KeyEventKeyCode];
+			lastkey = event[JAVA_KeyEventKeyCode];
  			lastuni = 0;
 			key_pressed = 0;
 			break;
@@ -668,7 +669,7 @@ int PLATFORM_Keyboard(void)
 	return AKEY_NONE;
 }
 
-int JAVANVM_INPUT_Initialise(int *argc, char *argv[])
+int JAVA_INPUT_Initialise(int *argc, char *argv[])
 {
 	if (INPUT_cx85) {
 		kbd_joy_0_enabled = FALSE;

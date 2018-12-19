@@ -1,11 +1,11 @@
 package atari800;
 
 /*
- * Java port of atari800
+ * NativeInteface.java - Java port of atari800 - Java -> emulator interface
  *
  * Copyright (C) 2007-2008 Perry McFarlane
  * Copyright (C) 1998-2013 Atari800 development team (see DOC/CREDITS)
- * Copyright (C) 2018      Franco Catrin
+ * Copyright (C) 2018      Franco Catrin (java port)
  *
  * This file is part of the Atari800 emulator project which emulates
  * the Atari 400, 800, 800XL, 130XE, and 5200 8-bit computers.

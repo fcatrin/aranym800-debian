@@ -1,7 +1,7 @@
 package sample;
 
 /*
- * AtariCanvas.java - Java port of atari800
+ * AtariCanvas.java - Java port of atari800 - sample application
  *
  * Copyright (C) 2007-2008 Perry McFarlane
  * Copyright (C) 1998-2013 Atari800 development team (see DOC/CREDITS)

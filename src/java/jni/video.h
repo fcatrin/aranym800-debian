@@ -1,6 +1,6 @@
-#ifndef JAVANVM_VIDEO_H_
-#define JAVANVM_VIDEO_H_
+#ifndef JAVA_VIDEO_H_
+#define JAVA_VIDEO_H_
 
-int JAVANVM_VIDEO_Initialise(int *argc, char *argv[]);
+int JAVA_VIDEO_Initialise(int *argc, char *argv[]);
 
-#endif /* JAVANVM_VIDEO_H_ */
+#endif /* JAVA_VIDEO_H_ */

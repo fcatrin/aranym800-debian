@@ -1,5 +1,5 @@
-#ifndef JAVANVM_MAIN_H_
-#define JAVANVM_MAIN_H_
+#ifndef JAVA_MAIN_H_
+#define JAVA_MAIN_H_
 
 int main(int argc, char **argv);
 

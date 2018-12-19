@@ -1,9 +1,10 @@
 /*
- * javanvm/sound.c - NestedVM-specific port code - sound output
+ * java/sound.c - JAva specific port code - sound output
  *
  * Copyright (c) 2001-2002 Jacek Poplawski (original atari_sdl.c)
  * Copyright (c) 2007-2008 Perry McFarlane (javanvm port)
  * Copyright (C) 2001-2013 Atari800 development team (see DOC/CREDITS)
+ * Copyright (c) 2018      Franco Catrin (java port)
  *
  * This file is part of the Atari800 emulator project which emulates
  * the Atari 400, 800, 800XL, 130XE, and 5200 8-bit computers.

@@ -30,6 +30,8 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 
 	private SourceDataLine line;
 
+	private ImageData imageData;
+
 	public EmulatorWidget(Composite parent) {
 		super(parent);
 	}
@@ -38,10 +40,14 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 	protected void onPaint(PaintEvent e) {
 		if (paletteData == null || pixels == null) return;
 		
-		ImageData imageData = new ImageData(width, height, 8, paletteData, width, pixels);
+		if (imageData == null) {
+			imageData = new ImageData(width, height, 8, paletteData, width, pixels);
+		} else {
+			imageData.setPixels(0, 0, width, pixels, 0);
+		}
 		Image image = new Image(getDisplay(), imageData);
-		
 		e.gc.drawImage(image, 0, 0);
+		image.dispose();
 	}
 
 	public void initGraphics(int scalew, int scaleh, int atariWidth, int atariHeight, int atariVisibleWidth, int atariLeftMargin) {

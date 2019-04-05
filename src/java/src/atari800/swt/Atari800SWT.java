@@ -45,7 +45,7 @@ public class Atari800SWT {
 			}
 		};
 		t.start();
-
+		emulatorWindow.getEmulatorWidget().forceFocus();
 		emulatorWindow.open();
 		
 		AsyncTask.asyncProcessor.shutdown();

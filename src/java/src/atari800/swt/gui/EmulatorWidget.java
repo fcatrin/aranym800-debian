@@ -1,10 +1,19 @@
 package atari800.swt.gui;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -28,9 +37,14 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 	private byte[] pixels;
 	private PaletteData paletteData;
 
+	List<KeyEvent> keyQueue = new ArrayList<KeyEvent>();
+	Set<String> kbHits = new HashSet<String>();
+	
 	private SourceDataLine line;
 
 	private ImageData imageData;
+	
+	private float scale = 1.5f;
 
 	public EmulatorWidget(Composite parent) {
 		super(parent);
@@ -46,7 +60,7 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 			imageData.setPixels(0, 0, width, pixels, 0);
 		}
 		Image image = new Image(getDisplay(), imageData);
-		e.gc.drawImage(image, 0, 0);
+		e.gc.drawImage(image, 0, 0, width, height, 0, 0, (int)(width*scale), (int)(height*scale));
 		image.dispose();
 	}
 
@@ -64,7 +78,7 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 
 			@Override
 			public void run() {
-				SWTUtils.setSize(EmulatorWidget.this, width, height);
+				SWTUtils.setSize(EmulatorWidget.this,  (int)(width*scale), (int)(height*scale));
 				redraw();
 				getShell().pack();
 				Log.d(LOGTAG, "initGraphics " + width + "x" + height);
@@ -100,16 +114,57 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 		paletteData = new PaletteData(palette);
 	}
 
+	private String buildKeyCode(int key, int loc) {
+		return String.format("%d.%d", key, loc);
+	}
+	
 	@Override
-	public int getKbHits(int key, int loc) {
-		// TODO Auto-generated method stub
-		return 0;
+	protected void onKeyPressed(KeyEvent event) {
+		event.data = true;
+		keyQueue.add(event);
+		
+		int key = KeyMapper.map(event.keyCode);
+		int loc = event.keyLocation;
+		kbHits.add(buildKeyCode(key, loc));
 	}
 
 	@Override
+	protected void onKeyReleased(KeyEvent event) {
+		event.data = false;
+		keyQueue.add(event);
+
+		int key = KeyMapper.map(event.keyCode);
+		int loc = event.keyLocation;
+		kbHits.remove(buildKeyCode(key, loc));
+	}
+
+	@Override
+	public int getKbHits(int key, int loc) {
+		// Log.d(LOGTAG, "pollKeyEvent");
+		return kbHits.contains(buildKeyCode(key, loc)) ? 1 : 0;
+	}
+
+	int atari_event[] = new int[4];
+
+	@Override
 	public int[] pollKeyEvent() {
-		// TODO Auto-generated method stub
-		return null;
+		if (keyQueue.isEmpty()){
+			return null;
+		}
+		KeyEvent event = (KeyEvent)keyQueue.get(0);
+		keyQueue.remove(0);
+
+		int type = ((boolean)event.data) ? 401 : 402;
+		int key  = event.keyCode;
+		char uni = event.character;
+		int loc  = event.keyLocation;
+		
+		atari_event[0] = type;
+		atari_event[1] = KeyMapper.map(key);
+		atari_event[2] = (int)uni;
+		atari_event[3] = loc;
+		
+		return atari_event;
 	}
 
 	@Override
@@ -169,8 +224,20 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 
 	@Override
 	public int checkThreadStatus() {
-		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	private static class KeyMapper {
+		private static Map<Integer, Integer> keymap = new HashMap<Integer, Integer>();
+		
+		public static int map(int keyCode) {
+			if (keymap.containsKey(keyCode)) return keymap.get(keyCode);
+			return keyCode;
+		}
+		
+		static {
+			keymap.put(SWT.F1, 112);
+		}
 	}
 
 }

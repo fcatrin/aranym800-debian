@@ -740,7 +740,7 @@ static void do_platform_PORT(UBYTE *s0, UBYTE *s1)
 
 static void do_platform_TRIG(UBYTE *t0, UBYTE *t1)
 {
-	int trig0, trig1, i;
+	int trig0, trig1;
 	trig0 = trig1 = 1;
 
 	if (kbd_joy_0_enabled) {

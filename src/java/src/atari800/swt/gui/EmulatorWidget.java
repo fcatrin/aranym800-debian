@@ -45,7 +45,6 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 	}
 
 	public void initGraphics(int scalew, int scaleh, int atariWidth, int atariHeight, int atariVisibleWidth, int atariLeftMargin) {
-		try {
 		this.atariWidth      = atariWidth;
 		this.atariLeftMargin = atariLeftMargin;
 		
@@ -66,11 +65,6 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 			}
 		};
 		task.execute();
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-			Runtime.getRuntime().exit(0);
-		}
 	}
 
 	public void displayScreen(byte[] atari_screen) {

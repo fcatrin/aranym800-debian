@@ -280,6 +280,12 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 			keymap.put(SWT.CONTROL, 17);
 			
 			keymap.put(13, 10);
+			
+			// from a - z
+			for(int i=0; i<26; i++) {
+				keymap.put(i + 97, i + 65);
+			}
+			
 		}
 	}
 

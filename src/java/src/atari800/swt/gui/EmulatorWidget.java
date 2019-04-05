@@ -234,6 +234,7 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 		
 		public static int map(int keyCode) {
 			if (keymap.containsKey(keyCode)) return keymap.get(keyCode);
+			Log.d(LOGTAG, "not mapped " + keyCode);
 			return keyCode;
 		}
 		
@@ -248,6 +249,37 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 		
 		static {
 			keymap.put(SWT.F1, 112);
+			keymap.put(SWT.F2, 113);
+			keymap.put(SWT.F3, 114);
+			keymap.put(SWT.F4, 115);
+			keymap.put(SWT.F5, 116);
+			keymap.put(SWT.F6, 117);
+			keymap.put(SWT.F7, 118);
+			keymap.put(SWT.F8, 119);
+			keymap.put(SWT.F9, 120);
+			keymap.put(SWT.F10, 121);
+			keymap.put(SWT.F11, 122);
+			keymap.put(SWT.F12, 123);
+			
+			keymap.put(SWT.ARROW_LEFT,  37);
+			keymap.put(SWT.ARROW_UP,    38);
+			keymap.put(SWT.ARROW_RIGHT, 39);
+			keymap.put(SWT.ARROW_DOWN,  40);
+			
+			keymap.put(SWT.KEYPAD_0, 96);
+			keymap.put(SWT.KEYPAD_1, 97);
+			keymap.put(SWT.KEYPAD_2, 98);
+			keymap.put(SWT.KEYPAD_3, 99);
+			keymap.put(SWT.KEYPAD_4, 100);
+			keymap.put(SWT.KEYPAD_5, 101);
+			keymap.put(SWT.KEYPAD_6, 102);
+			keymap.put(SWT.KEYPAD_7, 103);
+			keymap.put(SWT.KEYPAD_8, 104);
+			keymap.put(SWT.KEYPAD_9, 105);
+			
+			keymap.put(SWT.CONTROL, 17);
+			
+			keymap.put(13, 10);
 		}
 	}
 

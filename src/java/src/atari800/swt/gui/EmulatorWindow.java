@@ -32,18 +32,9 @@ public class EmulatorWindow {
 	    SWTUtils.mainLoop(shell);
 	}
 
-	public void initGraphics(int scalew, int scaleh, int atari_width, int atari_height, int atari_visible_width,
-			int atari_left_margin) {
-		emulatorWidget.initGraphics(scalew, scaleh, atari_width, atari_height, atari_visible_width, atari_left_margin);
-		
-	}
 
-	public void displayScreen(byte[] atari_screen) {
-		emulatorWidget.displayScreen(atari_screen);
-	}
-
-	public void initPalette(int[] colors) {
-		emulatorWidget.initPalette(colors);
+	public EmulatorWidget getEmulatorWidget() {
+		return emulatorWidget;
 	}
 
 }

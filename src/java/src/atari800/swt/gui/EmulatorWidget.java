@@ -29,6 +29,8 @@ import xtvapps.core.swt.UITask;
 
 public class EmulatorWidget extends CustomWidget implements NativeClient {
 	private static final String LOGTAG = EmulatorWidget.class.getSimpleName();
+	private static final int KEY_PRESSED  = 401;
+	private static final int KEY_RELEASED = 402;
 	
 	private int atariWidth;
 	private int atariLeftMargin;
@@ -124,7 +126,7 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 		keyQueue.add(event);
 		
 		int key = KeyMapper.map(event.keyCode);
-		int loc = event.keyLocation;
+		int loc = KeyMapper.mapLocation(event.keyLocation);
 		kbHits.add(buildKeyCode(key, loc));
 	}
 
@@ -134,7 +136,7 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 		keyQueue.add(event);
 
 		int key = KeyMapper.map(event.keyCode);
-		int loc = event.keyLocation;
+		int loc = KeyMapper.mapLocation(event.keyLocation);
 		kbHits.remove(buildKeyCode(key, loc));
 	}
 
@@ -154,7 +156,7 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 		KeyEvent event = (KeyEvent)keyQueue.get(0);
 		keyQueue.remove(0);
 
-		int type = ((boolean)event.data) ? 401 : 402;
+		int type = ((boolean)event.data) ? KEY_PRESSED : KEY_RELEASED;
 		int key  = event.keyCode;
 		char uni = event.character;
 		int loc  = event.keyLocation;
@@ -162,7 +164,7 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 		atari_event[0] = type;
 		atari_event[1] = KeyMapper.map(key);
 		atari_event[2] = (int)uni;
-		atari_event[3] = loc;
+		atari_event[3] = KeyMapper.mapLocation(loc);
 		
 		return atari_event;
 	}
@@ -233,6 +235,15 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 		public static int map(int keyCode) {
 			if (keymap.containsKey(keyCode)) return keymap.get(keyCode);
 			return keyCode;
+		}
+		
+		public static int mapLocation(int location) {
+			switch(location) {
+			case SWT.LEFT   : return 2;
+			case SWT.RIGHT  : return 3;
+			case SWT.KEYPAD : return 4;
+			default: return 1;
+			}
 		}
 		
 		static {

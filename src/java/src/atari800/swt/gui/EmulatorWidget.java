@@ -7,11 +7,14 @@ import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 
-import xtvapps.core.swt.BackBuffer;
+import xtvapps.core.Log;
 import xtvapps.core.swt.CustomWidget;
+import xtvapps.core.swt.SWTUtils;
+import xtvapps.core.swt.UITask;
 
 public class EmulatorWidget extends CustomWidget {
-
+	private static final String LOGTAG = EmulatorWidget.class.getSimpleName();
+	
 	private int atariWidth;
 	private int atariLeftMargin;
 	private int width;
@@ -21,11 +24,12 @@ public class EmulatorWidget extends CustomWidget {
 
 	public EmulatorWidget(Composite parent) {
 		super(parent);
-		
 	}
 
 	@Override
 	protected void onPaint(PaintEvent e) {
+		if (paletteData == null || pixels == null) return;
+		
 		ImageData imageData = new ImageData(width, height, 8, paletteData, width, pixels);
 		Image image = new Image(getDisplay(), imageData);
 		
@@ -33,6 +37,7 @@ public class EmulatorWidget extends CustomWidget {
 	}
 
 	public void initGraphics(int scalew, int scaleh, int atariWidth, int atariHeight, int atariVisibleWidth, int atariLeftMargin) {
+		try {
 		this.atariWidth      = atariWidth;
 		this.atariLeftMargin = atariLeftMargin;
 		
@@ -41,6 +46,23 @@ public class EmulatorWidget extends CustomWidget {
 		
 		int size = width*height;
 		pixels = new byte[size];
+		
+		UITask task = new UITask() {
+
+			@Override
+			public void run() {
+				SWTUtils.setSize(EmulatorWidget.this, width, height);
+				redraw();
+				getShell().pack();
+				Log.d(LOGTAG, "initGraphics " + width + "x" + height);
+			}
+		};
+		task.execute();
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			Runtime.getRuntime().exit(0);
+		}
 	}
 
 	public void displayScreen(byte[] atari_screen) {
@@ -51,7 +73,7 @@ public class EmulatorWidget extends CustomWidget {
 			ao += atariWidth;
 			po += width;
 		}
-		redraw();
+		this.postInvalidate();
 	}
 
 	public void initPalette(int[] colors) {

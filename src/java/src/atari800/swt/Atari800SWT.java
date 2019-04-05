@@ -10,32 +10,52 @@ import javax.sound.sampled.SourceDataLine;
 import org.eclipse.swt.widgets.Display;
 
 import atari800.NativeClient;
+import atari800.NativeInterface;
 import atari800.swt.gui.EmulatorWindow;
+import xtvapps.core.Log;
 import xtvapps.core.swt.AsyncProcessor;
 import xtvapps.core.swt.AsyncTask;
 import xtvapps.core.swt.SWTUtils;
 
 public class Atari800SWT implements NativeClient {
+	private static final String LOGTAG = Atari800SWT.class.getSimpleName();
 	
 	private static EmulatorWindow emulatorWindow;
 	SourceDataLine line;
 	
+	static boolean closed = false;
+	
 	public static void main(String[] args) throws IOException  {
 		SWTUtils.display = new Display();
 
+		Log.TRACE = true;
+		Log.d(LOGTAG, "app started");
 		
 		AsyncTask.asyncProcessor = new AsyncProcessor(SWTUtils.display);
 		AsyncTask.asyncProcessor.start();
 		
 		emulatorWindow = new EmulatorWindow(SWTUtils.display);
+
+		NativeInterface.init(new Atari800SWT());
+		Thread t = new Thread() {
+			@Override
+			public void run() {
+				Log.d(LOGTAG, "NativeInterface started");
+				NativeInterface.main(args);
+			}
+		};
+		t.start();
+
 		emulatorWindow.open();
 		
 		AsyncTask.asyncProcessor.shutdown();
 		SWTUtils.display.dispose();
+		closed = true;
 	}
 
 	@Override
 	public void initPalette(int[] colors) {
+		Log.d(LOGTAG, "initPalette");
 		emulatorWindow.initPalette(colors);
 	}
 
@@ -58,13 +78,13 @@ public class Atari800SWT implements NativeClient {
 
 	@Override
 	public boolean getWindowClosed() {
-		// TODO Auto-generated method stub
-		return false;
+		return closed;
 	}
 
 	@Override
 	public void initGraphics(int scaleh, int scalew, int atari_width, int atari_height, int atari_visible_width,
 			int atari_left_margin) {
+		Log.d(LOGTAG, "initGraphics");
 		emulatorWindow.initGraphics(scalew, scaleh, atari_width, atari_height, atari_visible_width, atari_left_margin);
 	}
 

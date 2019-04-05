@@ -21,12 +21,11 @@ public class EmulatorWindow {
    	    shell.setLayout(gridLayout);
    	    
    	    emulatorWidget = new EmulatorWidget(shell);
-   	    
 	}
 
 	public void open() {
 	    shell.pack();
-	    //shell.setSize(1024, 640);
+	    shell.setSize(1024, 640);
 	    SWTUtils.centerOnScreen(shell);
 	    shell.open();
 	    

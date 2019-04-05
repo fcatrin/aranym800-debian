@@ -17,6 +17,7 @@ import xtvapps.core.swt.SWTUtils;
 
 public class Atari800SWT implements NativeClient {
 	
+	private static EmulatorWindow emulatorWindow;
 	SourceDataLine line;
 	
 	public static void main(String[] args) throws IOException  {
@@ -26,7 +27,7 @@ public class Atari800SWT implements NativeClient {
 		AsyncTask.asyncProcessor = new AsyncProcessor(SWTUtils.display);
 		AsyncTask.asyncProcessor.start();
 		
-		EmulatorWindow emulatorWindow = new EmulatorWindow(SWTUtils.display);
+		emulatorWindow = new EmulatorWindow(SWTUtils.display);
 		emulatorWindow.open();
 		
 		AsyncTask.asyncProcessor.shutdown();
@@ -35,14 +36,12 @@ public class Atari800SWT implements NativeClient {
 
 	@Override
 	public void initPalette(int[] colors) {
-		// TODO Auto-generated method stub
-		
+		emulatorWindow.initPalette(colors);
 	}
 
 	@Override
 	public void displayScreen(byte[] atari_screen) {
-		// TODO Auto-generated method stub
-		
+		emulatorWindow.displayScreen(atari_screen);
 	}
 
 	@Override
@@ -66,8 +65,7 @@ public class Atari800SWT implements NativeClient {
 	@Override
 	public void initGraphics(int scaleh, int scalew, int atari_width, int atari_height, int atari_visible_width,
 			int atari_left_margin) {
-		// TODO Auto-generated method stub
-		
+		emulatorWindow.initGraphics(scalew, scaleh, atari_width, atari_height, atari_visible_width, atari_left_margin);
 	}
 
 	@Override

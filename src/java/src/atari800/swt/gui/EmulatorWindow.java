@@ -20,7 +20,7 @@ public class EmulatorWindow {
 	    // gridLayout.marginHeight = Style.WINDOW_MARGIN;
    	    shell.setLayout(gridLayout);
    	    
-   	    emulatorWidget = new EmulatorWidget(shell);
+   	    emulatorWidget = new EmulatorWidget(shell, 1.5f);
 	}
 
 	public void open() {

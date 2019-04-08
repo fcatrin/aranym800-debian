@@ -48,8 +48,9 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 	
 	private float scale = 1.5f;
 
-	public EmulatorWidget(Composite parent) {
+	public EmulatorWidget(Composite parent, float scale) {
 		super(parent);
+		this.scale = scale;
 	}
 
 	@Override

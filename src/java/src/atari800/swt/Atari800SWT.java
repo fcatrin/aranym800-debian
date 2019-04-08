@@ -2,14 +2,10 @@ package atari800.swt;
 
 import java.io.IOException;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 
 import org.eclipse.swt.widgets.Display;
 
-import atari800.NativeClient;
 import atari800.NativeInterface;
 import atari800.swt.gui.EmulatorWindow;
 import xtvapps.core.Log;

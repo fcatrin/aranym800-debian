@@ -18,6 +18,7 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 
@@ -65,6 +66,11 @@ public class EmulatorWidget extends CustomWidget implements NativeClient {
 		Image image = new Image(getDisplay(), imageData);
 		e.gc.drawImage(image, 0, 0, width, height, 0, 0, (int)(width*scale), (int)(height*scale));
 		image.dispose();
+	}
+
+	@Override
+	public Point computeSize(int wHint, int hHint) {
+		return new Point((int)(width*scale), (int)(height*scale));
 	}
 
 	public void initGraphics(int scalew, int scaleh, int atariWidth, int atariHeight, int atariVisibleWidth, int atariLeftMargin) {

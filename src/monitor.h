@@ -84,4 +84,13 @@ extern unsigned long MONITOR_coverage_cycles;
 
 #endif /* MONITOR_PROFILE */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+UBYTE const *MONITOR_get_memory(void);
+
+#ifdef __cplusplus
+}
+#endif
 #endif /* MONITOR_H_ */

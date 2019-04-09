@@ -29,6 +29,7 @@
 #include "nativeobject.h"
 #include "java.h"
 #include "main.h"
+#include "monitor.h"
 #include "atari800_NativeInterface.h"
 
 JavaVM* vm = NULL;
@@ -71,6 +72,35 @@ JavaObjectMethod methods[] = {
 
 #define N_METHODS 14
 
+static jintArray newIntArray(JNIEnv *env, int src[], int size) {
+	jintArray array = env->NewIntArray(size);
+	if (array == NULL) {
+		return NULL; /* out of memory error thrown */
+	}
+
+	jint fill[size];
+	for (int i = 0; i < size; i++) {
+		fill[i] = src[i];
+	}
+
+	env->SetIntArrayRegion(array, 0, size, fill);
+	return array;
+}
+
+static jbyteArray newByteArray(JNIEnv *env, UBYTE const src[], int size) {
+	jbyteArray array = env->NewByteArray(size);
+	if (array == NULL) {
+		return NULL; /* out of memory error thrown */
+	}
+
+	jbyte fill[size];
+	for (int i = 0; i < size; i++) {
+		fill[i] = src[i];
+	}
+
+	env->SetByteArrayRegion(array, 0, size, fill);
+	return array;
+}
 
 JNIEXPORT void JNICALL Java_atari800_NativeInterface_init
   (JNIEnv *env, jclass _class, jobject javaclient) {
@@ -102,35 +132,12 @@ JNIEXPORT void JNICALL Java_atari800_NativeInterface_main
 
 }
 
-static jintArray newIntArray(JNIEnv *env, int src[], int size) {
-	jintArray array = env->NewIntArray(size);
-	if (array == NULL) {
-		return NULL; /* out of memory error thrown */
-	}
+JNIEXPORT jbyteArray JNICALL Java_atari800_NativeInterface_getMemory
+  (JNIEnv *env, jclass _class) {
 
-	jint fill[size];
-	for (int i = 0; i < size; i++) {
-		fill[i] = src[i];
-	}
-
-	env->SetIntArrayRegion(array, 0, size, fill);
-	return array;
+	return newByteArray(env, MONITOR_get_memory(), 0x10000);
 }
 
-static jbyteArray newByteArray(JNIEnv *env, UBYTE const src[], int size) {
-	jbyteArray array = env->NewByteArray(size);
-	if (array == NULL) {
-		return NULL; /* out of memory error thrown */
-	}
-
-	jbyte fill[size];
-	for (int i = 0; i < size; i++) {
-		fill[i] = src[i];
-	}
-
-	env->SetByteArrayRegion(array, 0, size, fill);
-	return array;
-}
 
 extern "C" void JAVA_InitPalette(int colors[], int size) {
 	JNIEnv *env;

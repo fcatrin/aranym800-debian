@@ -2381,6 +2381,15 @@ static void monitor_show_mem(UWORD *addr, int screencodes)
 	} while (--count > 0);
 }
 
+static UBYTE monitor_mem[0x10000] = {};
+
+UBYTE const *MONITOR_get_memory(void) {
+	for(int i=0; i<0x10000; i++) {
+		monitor_mem[i] = MEMORY_SafeGetByte((UWORD) (i));
+	}
+	return monitor_mem;
+}
+
 static void monitor_dump_mem(void)
 {
 	int count = 2048;

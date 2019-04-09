@@ -23,6 +23,14 @@ JNIEXPORT void JNICALL Java_atari800_NativeInterface_init
 JNIEXPORT void JNICALL Java_atari800_NativeInterface_main
   (JNIEnv *, jclass, jobjectArray);
 
+/*
+ * Class:     atari800_NativeInterface
+ * Method:    getMemory
+ * Signature: ()[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_atari800_NativeInterface_getMemory
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

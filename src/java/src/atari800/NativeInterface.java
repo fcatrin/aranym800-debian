@@ -35,4 +35,5 @@ public abstract class NativeInterface {
 	public static native void init(NativeClient nativeClient);
 	public static native void main(String args[]);
 	public static native byte[] getMemory();
+	public static native int[]  getStatus();
 }

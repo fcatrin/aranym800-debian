@@ -138,6 +138,11 @@ JNIEXPORT jbyteArray JNICALL Java_atari800_NativeInterface_getMemory
 	return newByteArray(env, MONITOR_get_memory(), 0x10000);
 }
 
+JNIEXPORT jintArray JNICALL Java_atari800_NativeInterface_getStatus
+	(JNIEnv *env, jclass _class) {
+	return newIntArray(env, MONITOR_get_status(), 5);
+}
+
 
 extern "C" void JAVA_InitPalette(int colors[], int size) {
 	JNIEnv *env;

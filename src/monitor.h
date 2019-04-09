@@ -89,6 +89,7 @@ extern "C" {
 #endif
 
 UBYTE const *MONITOR_get_memory(void);
+int   *MONITOR_get_status(void);
 
 #ifdef __cplusplus
 }

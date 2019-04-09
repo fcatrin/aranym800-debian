@@ -2390,6 +2390,16 @@ UBYTE const *MONITOR_get_memory(void) {
 	return monitor_mem;
 }
 
+static int monitor_status[5] = {};
+int const *MONITOR_get_status() {
+	monitor_status[0] = CPU_regPC;
+	monitor_status[1] = CPU_regA;
+	monitor_status[2] = CPU_regX;
+	monitor_status[3] = CPU_regY;
+	monitor_status[4] = CPU_regS;
+	return monitor_status;
+}
+
 static void monitor_dump_mem(void)
 {
 	int count = 2048;
